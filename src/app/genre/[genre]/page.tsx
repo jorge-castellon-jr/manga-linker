@@ -20,7 +20,9 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
   }, []);
 
   const [page, setPage] = useState(1);
+  const [fetching, setFetching] = useState(false);
   const fetchMore = async () => {
+    setFetching(true);
     const all = await fetch(`/api/genres/${params.genre}?page=${page + 1}`);
     const allData = await all.json();
     setGenre((prevGenre) => ({
@@ -28,6 +30,7 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
       mangas: [...prevGenre!.mangas, ...allData.mangas],
     }));
     setPage(page + 1);
+    setFetching(false);
   };
 
   return (
@@ -55,13 +58,19 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
                   <p>{manga.title}</p>
                 </a>
               ))}
+            </div>
+            {fetching ? (
+              <p className="bg-gray-600 p-4 rounded-md text-center w-full">
+                Loading...
+              </p>
+            ) : (
               <a
-                className="bg-gray-600 p-4 rounded-md text-center"
+                className="bg-gray-600 p-4 rounded-md text-center w-full cursor-pointer"
                 onClick={fetchMore}
               >
                 Load More
               </a>
-            </div>
+            )}
           </div>
         )
       )}
