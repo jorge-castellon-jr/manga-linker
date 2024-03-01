@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Genre } from "./api/genres/GetGenres";
+import { SearchButton } from "@/components/SearchButton";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,7 @@ export default function Home() {
           ))}
         </div>
       )}
+      <SearchButton />
     </>
   );
 }
