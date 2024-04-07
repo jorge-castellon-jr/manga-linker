@@ -2,7 +2,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { SingleGenre } from "../api/genres/[id]/GetSingleGenre";
 import Image from "next/image";
-import SearchLayout from "../manga/[manga]/layout";
+import SingleGenreManga from "@/components/manga/SingleGenreManga";
 
 export default function SearchPage({ params }: { params: { query: string } }) {
   const [search, setSearch] = useState<SingleGenre>();
@@ -27,10 +27,14 @@ export default function SearchPage({ params }: { params: { query: string } }) {
     }
   };
 
+  useEffect(() => {
+    setSearchValue(params.query);
+    handleSearch();
+  }, []);
+
   const [searchValue, setSearchValue] = useState("");
 
-  const handleSearch = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSearch = async () => {
     const all = await fetch(
       `/api/search/${searchValue.toLowerCase().replace(/ /g, "_")}`
     );
@@ -42,21 +46,10 @@ export default function SearchPage({ params }: { params: { query: string } }) {
     <>
       {search && (
         <div className="grid gap-8 p-4">
-          <a href="/">Home</a>
           <h1>{search.title}</h1>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {search.mangas.map((manga) => (
-              <a key={manga.link} href={manga.link}>
-                <div className="rounded-lg relative aspect-[11/16] overflow-hidden">
-                  <Image
-                    src={manga.image}
-                    alt={manga.title}
-                    fill
-                    objectFit="cover"
-                  />
-                </div>
-                <p>{manga.title}</p>
-              </a>
+              <SingleGenreManga manga={manga} key={manga.link} />
             ))}
           </div>
         </div>
@@ -81,23 +74,6 @@ export default function SearchPage({ params }: { params: { query: string } }) {
       ) : (
         ""
       )}
-      <form onSubmit={handleSearch} className="mt-4 px-4">
-        <input
-          type="text"
-          value={searchValue}
-          className="w-full p-4 rounded-md text-black"
-          placeholder="Search"
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-      </form>
-      <div className="sticky bottom-0 p-4 text-center bg-gray-800">
-        <div
-          className="bg-slate-900 rounded-lg p-4 block w-full"
-          onClick={handleSearch}
-        >
-          Search
-        </div>
-      </div>
     </>
   );
 }

@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Genre } from "./api/genres/GetGenres";
-import { SearchButton } from "@/components/SearchButton";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
+import BottomNav from "@/components/BottomNavigation/BottomNav";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -16,7 +19,6 @@ export default function Home() {
       setLoading(false);
     };
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -28,17 +30,16 @@ export default function Home() {
       ) : (
         <div className="grid grid-cols-3 gap-8 p-4 ">
           {genres.map((genre) => (
-            <a
-              key={genre.link}
-              className="bg-gray-600 p-4 rounded-md text-center flex justify-center items-center 2"
-              href={genre.link}
-            >
-              {genre.title}
-            </a>
+            <Link key={genre.link} href={genre.link} prefetch>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-center">{genre.title}</CardTitle>
+                </CardHeader>
+              </Card>
+            </Link>
           ))}
         </div>
       )}
-      <SearchButton />
     </>
   );
 }

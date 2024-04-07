@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SingleGenre } from "../../api/genres/[id]/GetSingleGenre";
-import Image from "next/image";
+import SingleGenreManga from "@/components/manga/SingleGenreManga";
+import { Button } from "@/components/ui/button";
+import SpinnerIcon from "@/components/icon/spinner";
 
 export default function SingleGenre({ params }: { params: { genre: string } }) {
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,6 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
     setPage(page + 1);
     setFetching(false);
   };
-
   return (
     <>
       {loading ? (
@@ -41,37 +42,23 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
         </div>
       ) : (
         genre && (
-          <div className="grid gap-8 p-4">
-            <a href="/">Home</a>
-            <h1>{genre.title}</h1>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              {genre.mangas.map((manga) => (
-                <a key={manga.link} href={manga.link}>
-                  <div className="rounded-lg relative aspect-[11/16] overflow-hidden">
-                    <Image
-                      src={manga.image}
-                      alt={manga.title}
-                      fill
-                      objectFit="cover"
-                    />
-                  </div>
-                  <p>{manga.title}</p>
-                </a>
-              ))}
+          <>
+            <div className="grid gap-8 p-4">
+              <h1>{genre.title}</h1>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {genre.mangas.map((manga) => (
+                  <SingleGenreManga key={manga.link} manga={manga} />
+                ))}
+              </div>
+              {fetching ? (
+                <Button disabled>
+                  <SpinnerIcon className="animate-spin w-5 h-5" />
+                </Button>
+              ) : (
+                <Button onClick={fetchMore}>Load More</Button>
+              )}
             </div>
-            {fetching ? (
-              <p className="bg-gray-600 p-4 rounded-md text-center w-full">
-                Loading...
-              </p>
-            ) : (
-              <a
-                className="bg-gray-600 p-4 rounded-md text-center w-full cursor-pointer"
-                onClick={fetchMore}
-              >
-                Load More
-              </a>
-            )}
-          </div>
+          </>
         )
       )}
     </>
