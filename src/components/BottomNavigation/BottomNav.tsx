@@ -61,7 +61,7 @@ const BottomNav = (props: Props) => {
 
       <DarkModeToggle />
 
-      {isSignedIn() && (
+      {userLoggedIn && (
         <Link href="/favorites" prefetch>
           <Button variant="outline" size="icon" className="shrink-0">
             <StarIcon className="h-5 w-5" />
