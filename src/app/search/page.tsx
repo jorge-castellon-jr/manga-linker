@@ -3,8 +3,14 @@ import { FormEvent, useEffect, useState } from "react";
 import { SingleGenre } from "../api/genres/[id]/GetSingleGenre";
 import Image from "next/image";
 import SingleGenreManga from "@/components/manga/SingleGenreManga";
+import SpinnerIcon from "@/components/icon/spinner";
+import { Button } from "@/components/ui/button";
 
-export default function SearchPage({ params }: { params: { query: string } }) {
+export default function SearchPage({
+  searchParams: { query },
+}: {
+  searchParams: { query: string };
+}) {
   const [search, setSearch] = useState<SingleGenre>();
 
   const [page, setPage] = useState(1);
@@ -14,7 +20,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   const fetchMore = async () => {
     setFetching(true);
     try {
-      const all = await fetch(`/api/search/${searchValue}?page=${page + 1}`);
+      const all = await fetch(`/api/search/${query}?page=${page + 1}`);
       const allData = await all.json();
       setSearch((prevSearch) => ({
         ...prevSearch!,
@@ -28,16 +34,11 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   };
 
   useEffect(() => {
-    setSearchValue(params.query);
     handleSearch();
   }, []);
 
-  const [searchValue, setSearchValue] = useState("");
-
   const handleSearch = async () => {
-    const all = await fetch(
-      `/api/search/${searchValue.toLowerCase().replace(/ /g, "_")}`
-    );
+    const all = await fetch(`/api/search/${query.replace(/ /g, "_")}`);
     const allData = await all.json();
     setSearch(allData);
   };
@@ -56,20 +57,13 @@ export default function SearchPage({ params }: { params: { query: string } }) {
       )}
       {search && !searchDone ? (
         fetching ? (
-          <div className="w-full px-4">
-            <p className="bg-gray-600 p-4 block rounded-lg text-center">
-              Loading...
-            </p>
-          </div>
+          <Button className="w-full mx-4 mb-4">
+            <SpinnerIcon className="h-5 w-5 animate-spin" />
+          </Button>
         ) : (
-          <div className="w-full px-4">
-            <a
-              className="bg-gray-600 p-4 rounded-md text-center w-full block cursor-pointer"
-              onClick={fetchMore}
-            >
-              Load More
-            </a>
-          </div>
+          <Button className="w-full mx-4 mb-4" onClick={fetchMore}>
+            Load More
+          </Button>
         )
       ) : (
         ""

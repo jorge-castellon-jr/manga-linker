@@ -28,6 +28,7 @@ import { toast } from "sonner";
 type Props = {};
 
 const LoginPage = (props: Props) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const [viewPassword, setViewPassword] = useState("password");
@@ -36,8 +37,6 @@ const LoginPage = (props: Props) => {
   };
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    const router = useRouter();
-
     setLoading(true);
     e.preventDefault();
 
