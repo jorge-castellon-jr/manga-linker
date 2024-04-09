@@ -1,6 +1,7 @@
 import { load, Element } from "cheerio";
 
 export interface SingleMangaChapter {
+  id: string;
   title: string;
   link: string;
 }
@@ -33,6 +34,7 @@ export const getSingleManga = async (id: string): Promise<SingleManga> => {
       const title = $(chapter).text();
       const link = $(chapter).attr("href")!;
       return {
+        id: link.split("/").pop()!,
         title,
         link,
       };

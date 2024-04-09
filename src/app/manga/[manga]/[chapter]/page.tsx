@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SingleChapter } from "@/app/api/manga/[id]/[chapter]/GetSingleChapter";
+import Image from "next/image";
 
 export default function SingleGenre({
   params,
@@ -31,14 +32,24 @@ export default function SingleGenre({
       ) : (
         chapter && (
           <div className="grid gap-8 p-4">
-            <a href="/">Home</a>
-            <h1>{chapter.title}</h1>
-            <h2>{chapter.chapter}</h2>
-            {chapter.pages.map((page) => (
-              <div key={page} className="relative w-full">
-                <img src={page} alt={chapter.title} />
-              </div>
-            ))}
+            <div>
+              <h1 className="text-4xl font-black">{chapter.mangaTitle}</h1>
+              <h2>{chapter.title}</h2>
+            </div>
+            <div className="-mx-4">
+              {chapter.images.map((image, index) => (
+                <div key={image} className="relative w-full">
+                  <Image
+                    src={image}
+                    alt={`${chapter.title}-${index}`}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{ width: "100%", height: "auto" }} // optional
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )
       )}

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { signIn, signOut } from "@/lib/auth";
+import { dbUrl } from "@/lib/env";
 import {
   EyeClosedIcon,
   EyeOpenIcon,
@@ -53,7 +54,7 @@ const LoginPage = (props: Props) => {
       return;
     }
 
-    fetch("http://localhost:3737/users/login", {
+    fetch(`${dbUrl()}/users/login`, {
       method: "POST",
       body: JSON.stringify({
         username,

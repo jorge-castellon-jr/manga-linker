@@ -1,6 +1,7 @@
 import { load, Element } from "cheerio";
 
 interface Manga {
+  id: string;
   title: string;
   link: string;
   image: string;
@@ -36,6 +37,7 @@ export const getSearch = async (query: string): Promise<SingleGenre> => {
       .replace("https://chapmanganato.to", "/manga");
     const image = $(manga).find("img").attr("src")!;
     return {
+      id: link.split("/")[2],
       title,
       link,
       image,

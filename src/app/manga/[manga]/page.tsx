@@ -7,10 +7,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { DownloadedChapter } from "@/app/api/manga/[id]/downloaded/GetDownloadedChapters";
+import { isFavorite, updateRead } from "@/lib/favorites";
 
-export default function SingleGenre({ params }: { params: { manga: string } }) {
+export default function SingleManga({ params }: { params: { manga: string } }) {
   const [loading, setLoading] = useState(true);
   const [manga, setManga] = useState<SingleManga>();
+  const [downloadedChapters, setDownloadedChapters] =
+    useState<DownloadedChapter[]>();
 
   // fetch the data from the api
   useEffect(() => {
@@ -21,11 +25,27 @@ export default function SingleGenre({ params }: { params: { manga: string } }) {
       setLoading(false);
     };
     fetchData();
+
+    const fetchDownloadedChapters = async () => {
+      const downloadedChapters = await fetch(
+        `/api/manga/${params.manga}/downloaded`
+      );
+      const downloadedChaptersData: DownloadedChapter[] =
+        await downloadedChapters.json();
+      setDownloadedChapters(downloadedChaptersData);
+    };
+    fetchDownloadedChapters();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRead = (chapter: SingleMangaChapter) => {
     console.log("Read");
+    if (isFavorite(params.manga)) {
+      console.log("isFavorite", params.manga, chapter);
+
+      updateRead(params.manga, chapter.id);
+    }
   };
 
   return (
@@ -53,7 +73,31 @@ export default function SingleGenre({ params }: { params: { manga: string } }) {
                 </div>
               </CardContent>
             </Card>
+            {!!downloadedChapters?.length && (
+              <>
+                <h2 className="text-2xl">Downloaded Chapters</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                  {downloadedChapters.map((chapter) => (
+                    <Link
+                      key={chapter.link}
+                      href={`${chapter.saveLocation}`}
+                      prefetch
+                      onClick={() => handleRead(chapter)}
+                    >
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-center">
+                            {chapter.title}
+                          </CardTitle>
+                        </CardHeader>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
 
+                <h2 className="text-2xl">Online Chapters</h2>
+              </>
+            )}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {manga.chapters.map((chapter) => (
                 <Link

@@ -29,7 +29,7 @@ const SingleGenreManga = ({ manga }: Props) => {
   const [favorite, setFavorite] = useState(false);
 
   useEffect(() => {
-    setFavorite(isFavorite(manga));
+    setFavorite(isFavorite(manga.id));
   }, []);
 
   const addFavorite = async (manga: SingleGenreManga) => {
@@ -56,7 +56,7 @@ const SingleGenreManga = ({ manga }: Props) => {
         </CardContent>
         {isSignedIn() && (
           <CardFooter>
-            {isFavorite(manga) ? (
+            {isFavorite(manga.id) ? (
               <Button
                 onClick={(e) => {
                   e.preventDefault();

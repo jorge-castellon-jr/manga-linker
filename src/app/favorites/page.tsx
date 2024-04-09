@@ -4,6 +4,7 @@ import SingleGenreManga from "@/components/manga/SingleGenreManga";
 import { SingleManga } from "../api/manga/[id]/GetSingleManga";
 import { UserData } from "@/lib/auth";
 import { Favorite } from "@/lib/favorites";
+import { dbUrl } from "@/lib/env";
 
 export default function Favorites({ params }: { params: { genre: string } }) {
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ export default function Favorites({ params }: { params: { genre: string } }) {
 
       const user = JSON.parse(localUser) as UserData;
       const response = await fetch(
-        `http://localhost:3737/users/${user.username}/favorites`,
+        `${dbUrl()}/users/${user.username}/favorites`,
         {
           method: "POST",
           body: JSON.stringify({

@@ -1,6 +1,7 @@
 import { load, Element } from "cheerio";
 
 export interface SingleGenreManga {
+  id: string;
   title: string;
   link: string;
   image: string;
@@ -38,6 +39,7 @@ export const getSingleGenre = async (id: string): Promise<SingleGenre> => {
       .replace("https://chapmanganato.to", "/manga");
     const image = $(manga).find("img").attr("src")!;
     return {
+      id: link.split("/")[2],
       title,
       link,
       image,
