@@ -26,10 +26,9 @@ type Props = {
 };
 
 const SingleGenreManga = ({ manga }: Props) => {
-  const [favorite, setFavorite] = useState(false);
-
   const { isUserSignedIn } = useUserStore();
 
+  const [favorite, setFavorite] = useState(false);
   useEffect(() => {
     setFavorite(isFavorite(manga.id));
   }, []);

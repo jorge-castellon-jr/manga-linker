@@ -63,7 +63,7 @@ export const addToFavorites = (manga: Favorite) => {
 
 export const removeFromFavorites = (manga: SingleGenreManga) => {
   const user = getUser();
-  const newFavorites = user.favorites.filter((fav) => fav.link !== manga.link);
+  const newFavorites = user.favorites.filter((fav) => fav.id !== manga.id);
   const newUserData = { ...user, favorites: newFavorites };
 
   updateFavorites(newUserData);

@@ -8,7 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DownloadedChapter } from "@/app/api/manga/[id]/downloaded/GetDownloadedChapters";
-import { isFavorite, updateRead } from "@/lib/favorites";
+import {
+  addToFavorites,
+  isFavorite,
+  removeFromFavorites,
+  updateRead,
+} from "@/lib/favorites";
+import SingleGenreManga from "@/components/manga/SingleGenreManga";
+import { toast } from "sonner";
 
 export default function SingleManga({ params }: { params: { manga: string } }) {
   const [loading, setLoading] = useState(true);
@@ -51,6 +58,32 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
     }
   };
 
+  const [favorite, setFavorite] = useState(false);
+  useEffect(() => {
+    setFavorite(isFavorite(params.manga));
+  }, []);
+
+  const addFavorite = async () => {
+    setFavorite(true);
+    addToFavorites({
+      id: params.manga,
+      title: manga!.title,
+      link: "/manga/" + params.manga,
+      image: manga!.image,
+      read: [],
+    });
+    toast.success("Added to favorites");
+  };
+  const removeFavorite = async () => {
+    setFavorite(false);
+    removeFromFavorites({
+      id: params.manga,
+      title: manga!.title,
+      link: "/manga/" + params.manga,
+      image: manga!.image,
+    });
+    toast.success("Removed from favorites");
+  };
   return (
     <>
       {loading ? (
@@ -71,7 +104,15 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                   <img src={manga.image} alt={manga.title} />
                   <div className="flex flex-col gap-4">
                     <Button className="w-full">Download</Button>
-                    <Button className="w-full">Add to Favorites</Button>
+                    {favorite ? (
+                      <Button className="w-full" onClick={removeFavorite}>
+                        Remove from Favorites
+                      </Button>
+                    ) : (
+                      <Button className="w-full" onClick={addFavorite}>
+                        Add to Favorites
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardContent>

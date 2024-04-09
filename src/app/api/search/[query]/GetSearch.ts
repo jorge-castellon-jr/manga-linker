@@ -25,7 +25,7 @@ export const getSearch = async (query: string): Promise<SingleGenre> => {
   ).toArray();
 
   if (allMangas.length === 0) {
-    throw new Error("No mangas found");
+    return { title: "No results found", mangas: [] };
   }
 
   const mangas = allMangas.map((manga): Manga => {

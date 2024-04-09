@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import {
+  ArrowLeft,
   CircleUserIcon,
   HomeIcon,
   LibraryBigIcon,
@@ -22,17 +23,20 @@ import {
 import { DarkModeToggle } from "../DarkModeToggle";
 import { useUserStore } from "@/lib/UserStore";
 import { useRouter } from "next/navigation";
+import "./BottomNav.scss";
+import { useSearchStore } from "@/lib/SearchStore";
 
 type Props = {};
 
 const BottomNav = (props: Props) => {
   const router = useRouter();
   const { isUserSignedIn, signIn, signOut } = useUserStore();
+  const { setSearchQuery: setSearch } = useSearchStore();
 
   useEffect(() => {
-    const user = localStorage.getItem("user")
+    const user = localStorage.getItem("user");
     if (!!user) signIn(JSON.parse(user));
-  }, [])
+  }, []);
 
   const logOut = () => {
     signOut();
@@ -41,11 +45,11 @@ const BottomNav = (props: Props) => {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const search = (e.target as HTMLFormElement)["search"].value;
-    console.log(search);
-    router.push(`/search?query=${search}`);
+    router.push("/search");
   };
   return (
     <div className="sticky bottom-0 flex h-16 items-center gap-3 border border-b-0 bg-background px-4">
+      <DarkModeToggle />
       <form className="ml-auto flex-1" onSubmit={handleSearch}>
         <div className="relative">
           <MagnifyingGlassIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -54,23 +58,31 @@ const BottomNav = (props: Props) => {
             name="search"
             placeholder="Search manga..."
             className="pl-8"
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </form>
 
-      <DarkModeToggle />
-
+      <Button
+        variant="outline"
+        size="icon"
+        className="shrink-0"
+        onClick={() => router.back()}
+      >
+        <ArrowLeft className="icon" />
+        <span className="sr-only">Go To Favorites</span>
+      </Button>
       {isUserSignedIn && (
         <Link href="/favorites" prefetch>
           <Button variant="outline" size="icon" className="shrink-0">
-            <StarIcon className="h-5 w-5" />
+            <StarIcon className="icon" />
             <span className="sr-only">Go To Favorites</span>
           </Button>
         </Link>
       )}
       <Link href="/" prefetch>
         <Button variant="outline" size="icon" className="shrink-0">
-          <HomeIcon className="h-5 w-5" />
+          <HomeIcon className="icon" />
           <span className="sr-only">Go Home</span>
         </Button>
       </Link>
@@ -79,7 +91,7 @@ const BottomNav = (props: Props) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
-              <CircleUserIcon className="h-5 w-5" />
+              <CircleUserIcon className="icon" />
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
@@ -98,7 +110,7 @@ const BottomNav = (props: Props) => {
       ) : (
         <Link href="/login" prefetch>
           <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUserIcon className="h-5 w-5" />
+            <CircleUserIcon className="icon" />
             <span className="sr-only">Go To Login Page</span>
           </Button>
         </Link>

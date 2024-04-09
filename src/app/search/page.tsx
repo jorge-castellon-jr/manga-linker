@@ -5,13 +5,11 @@ import Image from "next/image";
 import SingleGenreManga from "@/components/manga/SingleGenreManga";
 import SpinnerIcon from "@/components/icon/spinner";
 import { Button } from "@/components/ui/button";
+import { useSearchStore } from "@/lib/SearchStore";
 
-export default function SearchPage({
-  searchParams: { query },
-}: {
-  searchParams: { query: string };
-}) {
-  const [search, setSearch] = useState<SingleGenre>();
+export default function SearchPage() {
+  const { searchQuery: search } = useSearchStore();
+  const [searchData, setSearchData] = useState<SingleGenre>();
 
   const [page, setPage] = useState(1);
   const [fetching, setFetching] = useState(false);
@@ -20,14 +18,16 @@ export default function SearchPage({
   const fetchMore = async () => {
     setFetching(true);
     try {
-      const all = await fetch(`/api/search/${query}?page=${page + 1}`);
+      const all = await fetch(`/api/search/${search}?page=${page + 1}`);
       const allData = await all.json();
-      setSearch((prevSearch) => ({
+      setSearchData((prevSearch) => ({
         ...prevSearch!,
         mangas: [...prevSearch!.mangas, ...allData.mangas],
       }));
-      setPage(page + 1);
       setFetching(false);
+      console.log(allData.mangas.length);
+
+      setPage(page + 1);
     } catch (error) {
       setSearchDone(true);
     }
@@ -35,38 +35,45 @@ export default function SearchPage({
 
   useEffect(() => {
     handleSearch();
-  }, []);
+  }, [search]);
 
   const handleSearch = async () => {
-    const all = await fetch(`/api/search/${query.replace(/ /g, "_")}`);
+    const all = await fetch(`/api/search/${search.replace(/ /g, "_")}`);
     const allData = await all.json();
-    setSearch(allData);
+    setSearchData(allData);
+    if (allData.mangas.length === 10) {
+      setSearchDone(false);
+      return;
+    }
+    if (allData.mangas.length < 10) {
+      setSearchDone(true);
+      return;
+    }
   };
 
   return (
     <>
-      {search && (
-        <div className="grid gap-8 p-4">
-          <h1>{search.title}</h1>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {search.mangas.map((manga) => (
-              <SingleGenreManga manga={manga} key={manga.link} />
-            ))}
+      {searchData && (
+        <>
+          <div className="grid gap-8 p-4">
+            <h1 className="text-2xl">{searchData.title}</h1>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+              {searchData.mangas.map((manga) => (
+                <SingleGenreManga manga={manga} key={manga.link} />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-      {search && !searchDone ? (
-        fetching ? (
-          <Button className="w-full mx-4 mb-4">
-            <SpinnerIcon className="h-5 w-5 animate-spin" />
-          </Button>
-        ) : (
-          <Button className="w-full mx-4 mb-4" onClick={fetchMore}>
-            Load More
-          </Button>
-        )
-      ) : (
-        ""
+          {!searchDone &&
+            (fetching ? (
+              <Button className="w-full mx-4 mb-4">
+                <SpinnerIcon className="h-5 w-5 animate-spin" />
+              </Button>
+            ) : (
+              <Button className="w-full mx-4 mb-4" onClick={fetchMore}>
+                Load More
+              </Button>
+            ))}
+        </>
       )}
     </>
   );

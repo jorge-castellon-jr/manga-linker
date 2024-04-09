@@ -11,7 +11,7 @@ export default function SingleGenre({
 }) {
   const [loading, setLoading] = useState(true);
   const [chapter, setChapter] = useState<SingleChapter>();
-  const [imagesToLoad, setImagesToLoad] = useState<number>(0);
+  const [imagesToLoad, setImagesToLoad] = useState<number>(100);
   const [loadedImages, setLoadedImages] = useState<number>(0);
 
   // fetch the data from the api
