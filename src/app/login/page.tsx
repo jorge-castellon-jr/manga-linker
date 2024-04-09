@@ -54,7 +54,7 @@ const LoginPage = (props: Props) => {
       return;
     }
 
-    fetch(`${dbUrl()}/users/login`, {
+    fetch("/api/login", {
       method: "POST",
       body: JSON.stringify({
         username,
