@@ -12,7 +12,7 @@ export const getSingleDownloadedChapter = async ({ id }: { id: string }) => {
     cache: "no-store",
   });
 
-  if (!data.ok) return { id };
+  if (!data.ok) return [];
 
   const manga = await data.json();
 

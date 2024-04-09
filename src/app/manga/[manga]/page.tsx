@@ -28,7 +28,10 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
 
     const fetchDownloadedChapters = async () => {
       const downloadedChapters = await fetch(
-        `/api/manga/${params.manga}/downloaded`
+        `/api/manga/${params.manga}/downloaded`,
+        {
+          cache: "no-store",
+        }
       );
       const downloadedChaptersData: DownloadedChapter[] =
         await downloadedChapters.json();
