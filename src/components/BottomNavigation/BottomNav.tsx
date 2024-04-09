@@ -27,7 +27,11 @@ type Props = {};
 
 const BottomNav = (props: Props) => {
   const router = useRouter();
-  const { isUserSignedIn, signOut } = useUserStore();
+  const { isUserSignedIn, signIn, signOut } = useUserStore();
+
+  React.useEffect(() => {
+    if (!!localStorage.getItem("user")) signIn();
+  }, [])
 
   const logOut = () => {
     signOut();

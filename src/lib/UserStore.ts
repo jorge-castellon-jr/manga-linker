@@ -13,7 +13,7 @@ export interface UserData {
 }
 
 export const useUserStore = create<UserStore>((set) => ({
-  isUserSignedIn: !!localStorage.getItem("user"),
+  isUserSignedIn: false,
   signIn: (user) => {
     localStorage.setItem("user", JSON.stringify(user));
     set({ isUserSignedIn: true });
