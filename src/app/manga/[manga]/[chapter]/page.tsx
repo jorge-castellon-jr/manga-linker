@@ -45,23 +45,21 @@ export default function SingleGenre({
             <h2>{chapter.title}</h2>
           </div>
           <div className="-mx-4">
-            {loading ? (
-              <Skeleton className="h-[500px] w-full rounded-xl" />
-            ) : (
-              chapter.images.map((image, index) => (
-                <div key={image} className="relative w-full">
-                  <Image
-                    src={image}
-                    alt={`${chapter.title}-${index}`}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    style={{ width: "100%", height: "auto" }}
-                    onLoadingComplete={handleImageLoad}
-                  />
-                </div>
-              ))
-            )}
+            {loading && <Skeleton className="h-[500px] w-full rounded-xl" />}
+
+            {chapter.images.map((image, index) => (
+              <div key={image} className="relative w-full">
+                <Image
+                  src={image}
+                  alt={`${chapter.title}-${index}`}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  style={{ width: "100%", height: "auto" }}
+                  onLoadCapture={handleImageLoad}
+                />
+              </div>
+            ))}
           </div>
         </div>
       )}
