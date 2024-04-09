@@ -11,7 +11,8 @@ export const getSingleDownloadedChapter = async ({ id }: { id: string }) => {
   const data = await fetch(`${dbUrl()}/manga/${id}`, {
     cache: "no-store",
   });
-  return data.json();
+  if (!data.ok) return data.text();
+
   const manga = await data.json();
 
   if (!manga) return [];
