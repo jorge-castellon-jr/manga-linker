@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -29,8 +29,9 @@ const BottomNav = (props: Props) => {
   const router = useRouter();
   const { isUserSignedIn, signIn, signOut } = useUserStore();
 
-  React.useEffect(() => {
-    if (!!localStorage.getItem("user")) signIn();
+  useEffect(() => {
+    const user = localStorage.getItem("user")
+    if (!!user) signIn(JSON.parse(user));
   }, [])
 
   const logOut = () => {
