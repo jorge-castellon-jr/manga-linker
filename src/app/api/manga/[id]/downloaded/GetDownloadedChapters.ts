@@ -7,14 +7,11 @@ export type DownloadedChapter = SingleChapter & {
   totalImages: number;
   downloadedImages: number;
 };
-export const getSingleDownloadedChapter = async ({
-  id,
-}: {
-  id: string;
-}): Promise<SingleChapter[]> => {
+export const getSingleDownloadedChapter = async ({ id }: { id: string }) => {
   const data = await fetch(`${dbUrl()}/manga/${id}`, {
     cache: "no-store",
   });
+  return data;
   const manga = await data.json();
 
   if (!manga) return [];
