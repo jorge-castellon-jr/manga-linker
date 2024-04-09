@@ -1,5 +1,5 @@
 import { SingleGenreManga } from "@/app/api/genres/[id]/GetSingleGenre";
-import { UserData } from "./auth";
+import { UserData } from "./UserStore";
 import { SingleMangaChapter } from "@/app/api/manga/[id]/GetSingleManga";
 import { dbUrl } from "./env";
 

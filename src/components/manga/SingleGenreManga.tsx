@@ -19,7 +19,7 @@ import {
   removeFromFavorites,
 } from "@/lib/favorites";
 import { StarIcon, StarOffIcon } from "lucide-react";
-import { isSignedIn } from "@/lib/auth";
+import { useUserStore } from "@/lib/UserStore";
 
 type Props = {
   manga: SingleGenreManga;
@@ -27,6 +27,8 @@ type Props = {
 
 const SingleGenreManga = ({ manga }: Props) => {
   const [favorite, setFavorite] = useState(false);
+
+  const { isUserSignedIn } = useUserStore();
 
   useEffect(() => {
     setFavorite(isFavorite(manga.id));
@@ -54,9 +56,9 @@ const SingleGenreManga = ({ manga }: Props) => {
             <Image src={manga.image} alt={manga.title} fill objectFit="cover" />
           </div>
         </CardContent>
-        {isSignedIn() && (
+        {isUserSignedIn && (
           <CardFooter>
-            {isFavorite(manga.id) ? (
+            {favorite ? (
               <Button
                 onClick={(e) => {
                   e.preventDefault();

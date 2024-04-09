@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -19,24 +19,18 @@ import {
   MenuIcon,
   StarIcon,
 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { DarkModeToggle } from "../DarkModeToggle";
-import { isSignedIn, signOut } from "@/lib/auth";
+import { useUserStore } from "@/lib/UserStore";
 import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const BottomNav = (props: Props) => {
   const router = useRouter();
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setUserLoggedIn(isSignedIn());
-  }, []);
+  const { isUserSignedIn, signOut } = useUserStore();
 
   const logOut = () => {
     signOut();
-    setUserLoggedIn(false);
   };
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,7 +55,7 @@ const BottomNav = (props: Props) => {
 
       <DarkModeToggle />
 
-      {userLoggedIn && (
+      {isUserSignedIn && (
         <Link href="/favorites" prefetch>
           <Button variant="outline" size="icon" className="shrink-0">
             <StarIcon className="h-5 w-5" />
@@ -76,7 +70,7 @@ const BottomNav = (props: Props) => {
         </Button>
       </Link>
 
-      {userLoggedIn ? (
+      {isUserSignedIn ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import SingleGenreManga from "@/components/manga/SingleGenreManga";
 import { SingleManga } from "../api/manga/[id]/GetSingleManga";
-import { UserData } from "@/lib/auth";
+import { UserData } from "@/lib/UserStore";
 import { Favorite } from "@/lib/favorites";
 import { dbUrl } from "@/lib/env";
 

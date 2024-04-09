@@ -13,7 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
-import { signIn, signOut } from "@/lib/auth";
+import {
+  signInLocalStorage,
+  signOutLocalStorage,
+  useUserStore,
+} from "@/lib/UserStore";
 import { dbUrl } from "@/lib/env";
 import {
   EyeClosedIcon,
@@ -36,6 +40,8 @@ const LoginPage = (props: Props) => {
   const handleViewPassword = () => {
     setViewPassword((prev) => (prev === "password" ? "text" : "password"));
   };
+
+  const { signIn, signOut } = useUserStore();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
