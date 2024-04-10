@@ -92,7 +92,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
         </div>
       ) : (
         manga && (
-          <div className="grid gap-8 p-4">
+          <div className="grid gap-4 p-4">
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl">

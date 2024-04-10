@@ -28,7 +28,7 @@ export default function Home() {
           Loading
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-8 p-4 ">
+        <div className="grid grid-cols-3 gap-4 p-4 ">
           {genres.map((genre) => (
             <Link key={genre.link} href={genre.link} prefetch>
               <Card>

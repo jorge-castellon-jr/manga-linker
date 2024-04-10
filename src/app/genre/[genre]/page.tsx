@@ -43,7 +43,7 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
       ) : (
         genre && (
           <>
-            <div className="grid gap-8 p-4">
+            <div className="grid gap-4 p-4">
               <h1>{genre.title}</h1>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {genre.mangas.map((manga) => (
