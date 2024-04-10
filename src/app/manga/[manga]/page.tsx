@@ -70,6 +70,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
       });
       const { message, data } = await fetchData.json();
       if (!data.foundManga) {
+        setDownloading(false);
         return toast.info("Manga was created");
       }
 
