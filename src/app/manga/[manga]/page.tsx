@@ -68,16 +68,27 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
       const fetchData = await fetch("/api/manga/" + params.manga, {
         method: "POST",
       });
-      const { downloaded } = await fetchData.json();
+      const { message, data } = await fetchData.json();
+      if (!data.foundManga) {
+        return toast.info("Manga was created");
+      }
 
-      if (downloaded.downloadedImages !== downloaded.totalImages) {
-        handleDownload();
+      const { foundChapters } = data;
+
+      const needDownload = foundChapters.filter(
+        (chapter: any) => !chapter.downloaded
+      );
+
+      if (needDownload[0].downloadedImages !== needDownload[0].totalImages) {
+        setTimeout(() => {
+          handleDownload();
+        }, 15000);
         return toast(
-          `Downloading more images, please wait a moment. ${downloaded.downloadedImages}/${downloaded.totalImages}`
+          `Attempting to downloading more images, please wait a moment. ${needDownload[0].downloadedImages}/${needDownload[0].totalImages}`
         );
       }
 
-      toast.success(`Downloaded ${downloaded.title} complete`);
+      toast.success(message);
       setDownloading(false);
 
       fetchDownloadedChapters();
