@@ -82,17 +82,24 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
         return toast.info("All chapters already downloaded");
       }
 
-      if (needDownload[0].downloadedImages !== needDownload[0].totalImages) {
+      if (
+        needDownload[0].downloadedImages !== needDownload[0].totalImages ||
+        needDownload[0].downloadedImages === 0
+      ) {
         const wait =
           (needDownload[0].totalImages - needDownload[0].downloadedImages) * 3;
-        const waitSeconds = wait > 45 ? 45 : wait;
+        // set the wait time to a minimum of 10 seconds and a maximum of 60 seconds
+        const waitSeconds = Math.min(Math.max(wait, 10), 30);
         console.log("Waiting for", waitSeconds, "seconds");
+        if (needDownload[0].totalImages === 0) fetchDownloadedChapters();
 
         setTimeout(() => {
           handleDownload();
         }, waitSeconds * 1000);
         return toast(
-          `Attempting to downloading more images, please wait a moment. ${needDownload[0].downloadedImages}/${needDownload[0].totalImages}`
+          `Attempting to downloading more images, please wait a moment. ${
+            needDownload[0].downloadedImages
+          }/${needDownload[0].totalImages || "Unknown"}`
         );
       }
 
@@ -191,7 +198,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                       prefetch
                       onClick={() => {
                         handleRead(chapter);
-                        handleDownload();
+                        // handleDownload();
                       }}
                     >
                       <Card>
