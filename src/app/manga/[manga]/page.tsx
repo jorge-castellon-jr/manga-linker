@@ -64,20 +64,26 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   const [downloading, setDownloading] = useState(false);
   const handleDownload = async () => {
     setDownloading(true);
-    toast.info("Downloading chapter");
-    const fetchData = await fetch("/api/manga/" + params.manga, {
-      method: "POST",
-    });
-    const data = await fetchData.json();
-    console.log(data);
+    try {
+      const fetchData = await fetch("/api/manga/" + params.manga, {
+        method: "POST",
+      });
+      const { downloaded } = await fetchData.json();
 
-    toast.success(
-      `Downloaded ${data.downloaded.downloadedImages} chapters of ${data.downloaded.totalImages}`
-    );
-    setDownloading(false);
+      if (downloaded.downloadedImages !== downloaded.totalImages) {
+        handleDownload();
+        return toast(
+          `Downloading more images, please wait a moment. ${downloaded.downloadedImages}/${downloaded.totalImages}`
+        );
+      }
 
-    if (data.downloaded.downloadedImages === data.downloaded.totalImages) {
+      toast.success(`Downloaded ${downloaded.title} complete`);
+      setDownloading(false);
+
       fetchDownloadedChapters();
+    } catch (error) {
+      toast.error("Failed to download chapter");
+      setDownloading(false);
     }
   };
 
@@ -160,8 +166,8 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                       href={`${chapter.saveLocation}`}
                       prefetch
                       onClick={() => {
-                        handleRead(chapter)
-                        handleDownload()
+                        handleRead(chapter);
+                        handleDownload();
                       }}
                     >
                       <Card>
