@@ -11,8 +11,8 @@ export const GET = async (
 };
 
 export const POST = async (
-  _,
-  { params }
+  _: NextRequest,
+  { params }: { params: { id: string } }
 ) => {
   const data = await fetch(process.env.DB_URL + "/manga/" + params.id, {
     method: "POST",
