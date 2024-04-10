@@ -13,9 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
-import {
-  useUserStore,
-} from "@/lib/UserStore";
+import { useUserStore } from "@/lib/UserStore";
 import { dbUrl } from "@/lib/env";
 import {
   EyeClosedIcon,
@@ -45,7 +43,9 @@ const LoginPage = (props: Props) => {
     setLoading(true);
     e.preventDefault();
 
-    const username = (e.target as HTMLFormElement)["username"].value;
+    const username = (e.target as HTMLFormElement)[
+      "username"
+    ].value.toLowerCase();
     const password = (e.target as HTMLFormElement)["password"].value;
     if (!username) {
       toast.error("Username is required");

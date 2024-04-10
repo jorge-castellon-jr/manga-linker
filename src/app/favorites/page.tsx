@@ -17,15 +17,13 @@ export default function Favorites({ params }: { params: { genre: string } }) {
       if (!localUser) return setLoading(false);
 
       const user = JSON.parse(localUser) as UserData;
-      const response = await fetch(
-        `${dbUrl()}/users/${user.username}/favorites`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            password: user.password,
-          }),
-        }
-      );
+      const response = await fetch(`/api/login/favorites`, {
+        method: "POST",
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      });
       const fetchedUser: Favorite[] = await response.json();
 
       setMangas(fetchedUser);

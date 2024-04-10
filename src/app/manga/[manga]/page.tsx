@@ -16,6 +16,8 @@ import {
 } from "@/lib/favorites";
 import SingleGenreManga from "@/components/manga/SingleGenreManga";
 import { toast } from "sonner";
+import SpinnerIcon from "@/components/icon/spinner";
+import { useRouter } from "next/navigation";
 
 export default function SingleManga({ params }: { params: { manga: string } }) {
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,17 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   const [downloadedChapters, setDownloadedChapters] =
     useState<DownloadedChapter[]>();
 
+  const fetchDownloadedChapters = async () => {
+    const downloadedChapters = await fetch(
+      `/api/manga/${params.manga}/downloaded`,
+      {
+        cache: "no-store",
+      }
+    );
+    const downloadedChaptersData: DownloadedChapter[] =
+      await downloadedChapters.json();
+    setDownloadedChapters(downloadedChaptersData);
+  };
   // fetch the data from the api
   useEffect(() => {
     const fetchData = async () => {
@@ -33,17 +46,6 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
     };
     fetchData();
 
-    const fetchDownloadedChapters = async () => {
-      const downloadedChapters = await fetch(
-        `/api/manga/${params.manga}/downloaded`,
-        {
-          cache: "no-store",
-        }
-      );
-      const downloadedChaptersData: DownloadedChapter[] =
-        await downloadedChapters.json();
-      setDownloadedChapters(downloadedChaptersData);
-    };
     fetchDownloadedChapters();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,14 +60,26 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
     }
   };
 
+  const router = useRouter();
+  const [downloading, setDownloading] = useState(false);
   const handleDownload = async () => {
-    const data = await fetch("/api/manga/" + params.manga, {
-      method: "POST"
-    })
-    const allData = await data.json();
+    setDownloading(true);
+    toast.info("Downloading chapter");
+    const fetchData = await fetch("/api/manga/" + params.manga, {
+      method: "POST",
+    });
+    const data = await fetchData.json();
+    console.log(data);
 
-    toast.success("Downloading")
-  }
+    toast.success(
+      `Downloaded ${data.downloaded.downloadedImages} chapters of ${data.downloaded.totalImages}`
+    );
+    setDownloading(false);
+
+    if (data.downloaded.downloadedImages === data.downloaded.totalImages) {
+      fetchDownloadedChapters();
+    }
+  };
 
   const [favorite, setFavorite] = useState(false);
   useEffect(() => {
@@ -112,8 +126,16 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <img src={manga.image} alt={manga.title} />
                   <div className="flex flex-col gap-4">
-                    <Button className="w-full" onClick={handleDownload}>
-                      Download single chapter
+                    <Button
+                      className="w-full"
+                      onClick={handleDownload}
+                      disabled={downloading}
+                    >
+                      {downloading ? (
+                        <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
+                      ) : (
+                        "Download single chapter"
+                      )}
                     </Button>
                     {favorite ? (
                       <Button className="w-full" onClick={removeFavorite}>

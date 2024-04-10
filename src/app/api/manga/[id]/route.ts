@@ -16,6 +16,8 @@ export const POST = async (
   _: NextRequest,
   { params }: { params: { id: string } }
 ) => {
+  console.log(params, `${dbUrl()}/manga/${params.id}`);
+
   const data = await fetch(`${dbUrl()}/manga/${params.id}`, {
     method: "POST",
     cache: "no-cache",

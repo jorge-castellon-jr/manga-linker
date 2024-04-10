@@ -1,6 +1,5 @@
 import { SingleGenreManga } from "@/app/api/genres/[id]/GetSingleGenre";
 import { UserData } from "./UserStore";
-import { SingleMangaChapter } from "@/app/api/manga/[id]/GetSingleManga";
 import { dbUrl } from "./env";
 
 export interface Favorite {
@@ -25,7 +24,7 @@ const updateFavorites = (user: UserData) => {
   const newUserData = JSON.stringify(user);
 
   localStorage.setItem("user", newUserData);
-  fetch(`${dbUrl()}/users/favorites`, {
+  fetch(`/api/login/favorites/read`, {
     method: "POST",
     body: newUserData,
   });
@@ -37,6 +36,8 @@ export const updateRead = (mangaId: string, chapterId: string) => {
   console.log(manga);
 
   if (!manga) return;
+
+  if (manga.read.includes(chapterId)) return;
 
   // update the specific chapter read property with the chapter link
   const newManga = {

@@ -44,11 +44,17 @@ export default function SingleGenre({
             <h1 className="text-4xl font-black">{chapter.mangaTitle}</h1>
             <h2>{chapter.title}</h2>
           </div>
-          <div className="-mx-4">
-            {loading && <Skeleton className="h-[500px] w-full rounded-xl" />}
+          <div
+            className={`-mx-4 ${
+              loading ? "min-h-screen mx-4 my-8 overflow-hidden" : ""
+            }`}
+          >
+            {loading && (
+              <Skeleton className="h-full w-full rounded-xl mb-[500px]" />
+            )}
 
             {chapter.images.map((image, index) => (
-              <div key={image} className="relative w-full">
+              <div key={image} className={"relative w-full"}>
                 <Image
                   src={image}
                   alt={`${chapter.title}-${index}`}
