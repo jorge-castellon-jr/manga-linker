@@ -27,6 +27,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   useEffect(() => {
     const fetchData = async () => {
       const all = await fetch("/api/manga/" + params.manga);
+      const allData = await all.json();
       setManga(allData);
       setLoading(false);
     };
@@ -61,7 +62,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
     const data = await fetch("/api/manga/" + params.manga, {
       method: "POST"
     })
-    const allData = await all.json();
+    const allData = await data.json();
 
     toast.success(allData)
   }
