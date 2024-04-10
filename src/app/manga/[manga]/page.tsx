@@ -27,7 +27,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   useEffect(() => {
     const fetchData = async () => {
       const all = await fetch("/api/manga/" + params.manga);
-ui      setManga(allData);
+      setManga(allData);
       setLoading(false);
     };
     fetchData();
