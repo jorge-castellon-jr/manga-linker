@@ -170,7 +170,9 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
             </Card>
             {!!downloadedChapters?.length && (
               <>
-                <h2 className="text-2xl">Downloaded Chapters</h2>
+                {downloadedChapters.length !== manga.chapters.length && (
+                  <h2 className="text-2xl">Downloaded Chapters</h2>
+                )}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                   {downloadedChapters.map((chapter) => (
                     <Link
@@ -193,26 +195,34 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                   ))}
                 </div>
 
-                <h2 className="text-2xl">Online Chapters</h2>
+                {downloadedChapters.length !== manga.chapters.length && (
+                  <h2 className="text-2xl">Online Chapters</h2>
+                )}
               </>
             )}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              {manga.chapters.map((chapter) => (
-                <Link
-                  key={chapter.link}
-                  href={chapter.link}
-                  prefetch
-                  onClick={() => handleRead(chapter)}
-                >
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-center">
-                        {chapter.title}
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              ))}
+              {manga.chapters
+                .filter((chapter) => {
+                  return !downloadedChapters?.find((downloadedChapter) => {
+                    return downloadedChapter.id === chapter.id;
+                  });
+                })
+                .map((chapter) => (
+                  <Link
+                    key={chapter.link}
+                    href={chapter.link}
+                    prefetch
+                    onClick={() => handleRead(chapter)}
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-center">
+                          {chapter.title}
+                        </CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                ))}
             </div>
           </div>
         )
