@@ -83,9 +83,14 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
       }
 
       if (needDownload[0].downloadedImages !== needDownload[0].totalImages) {
+        const wait =
+          (needDownload[0].totalImages - needDownload[0].downloadedImages) * 3;
+        const waitSeconds = wait > 45 ? 45 : wait;
+        console.log("Waiting for", waitSeconds, "seconds");
+
         setTimeout(() => {
           handleDownload();
-        }, 45 * 1000);
+        }, waitSeconds * 1000);
         return toast(
           `Attempting to downloading more images, please wait a moment. ${needDownload[0].downloadedImages}/${needDownload[0].totalImages}`
         );
