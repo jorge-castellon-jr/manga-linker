@@ -59,7 +59,9 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   };
 
   const handleDownload = async () => {
-    const data = await fetch(process.env.DB_Url + "/manga/" + params.manga)
+    const data = await fetch(process.env.DB_Url + "/manga/" + params.manga, {
+      method: "POST"
+    })
     toast.success(await data.json())
   }
 
