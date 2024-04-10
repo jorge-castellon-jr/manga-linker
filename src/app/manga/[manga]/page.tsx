@@ -111,7 +111,9 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <img src={manga.image} alt={manga.title} />
                   <div className="flex flex-col gap-4">
-                    <Button className="w-full" onClick={handleDownload}>Download</Button>
+                    <Button className="w-full" onClick={handleDownload}>
+                      Download single chapter
+                    </Button>
                     {favorite ? (
                       <Button className="w-full" onClick={removeFavorite}>
                         Remove from Favorites
