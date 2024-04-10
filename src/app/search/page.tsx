@@ -63,16 +63,18 @@ export default function SearchPage() {
               ))}
             </div>
           </div>
+          <div className="mx-4 mb-4">
           {!searchDone &&
             (fetching ? (
-              <Button className="w-full mx-4 mb-4">
+              <Button className="w-full">
                 <SpinnerIcon className="h-5 w-5 animate-spin" />
               </Button>
             ) : (
-              <Button className="w-full mx-4 mb-4" onClick={fetchMore}>
+              <Button className="w-full" onClick={fetchMore}>
                 Load More
               </Button>
             ))}
+            </div>
         </>
       )}
     </>
