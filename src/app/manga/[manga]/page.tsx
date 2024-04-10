@@ -27,8 +27,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   useEffect(() => {
     const fetchData = async () => {
       const all = await fetch("/api/manga/" + params.manga);
-      const allData = await all.json();
-      setManga(allData);
+ui      setManga(allData);
       setLoading(false);
     };
     fetchData();
@@ -59,11 +58,12 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   };
 
   const handleDownload = async () => {
-    const data = await fetch(process.env.DB_Url + "/manga/" + params.manga, {
-      method: "POST",
-      cache: "no-cache"
+    const data = await fetch("/api/manga/" + params.manga, {
+      method: "POST"
     })
-    toast.success(await data.json())
+    const allData = await all.json();
+
+    toast.success(allData)
   }
 
   const [favorite, setFavorite] = useState(false);
