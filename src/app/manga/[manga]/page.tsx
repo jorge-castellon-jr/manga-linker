@@ -64,7 +64,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
     })
     const allData = await data.json();
 
-    toast.success(allData)
+    toast.success("Downloading")
   }
 
   const [favorite, setFavorite] = useState(false);
