@@ -14,10 +14,8 @@ import {
   removeFromFavorites,
   updateRead,
 } from "@/lib/favorites";
-import SingleGenreManga from "@/components/manga/SingleGenreManga";
 import { toast } from "sonner";
 import SpinnerIcon from "@/components/icon/spinner";
-import { useRouter } from "next/navigation";
 
 export default function SingleManga({ params }: { params: { manga: string } }) {
   const [loading, setLoading] = useState(true);
@@ -60,7 +58,6 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
     }
   };
 
-  const router = useRouter();
   const [downloading, setDownloading] = useState(false);
   const handleDownload = async () => {
     setDownloading(true);
@@ -80,6 +77,11 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
         (chapter: any) => !chapter.downloaded
       );
 
+      if (!needDownload.length) {
+        setDownloading(false);
+        return toast.info("All chapters already downloaded");
+      }
+
       if (needDownload[0].downloadedImages !== needDownload[0].totalImages) {
         setTimeout(() => {
           handleDownload();
@@ -94,6 +96,7 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
 
       fetchDownloadedChapters();
     } catch (error) {
+      console.error(error);
       toast.error("Failed to download chapter");
       setDownloading(false);
     }
@@ -144,17 +147,19 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <img src={manga.image} alt={manga.title} />
                   <div className="flex flex-col gap-4">
-                    <Button
-                      className="w-full"
-                      onClick={handleDownload}
-                      disabled={downloading}
-                    >
-                      {downloading ? (
-                        <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
-                      ) : (
-                        "Download single chapter"
-                      )}
-                    </Button>
+                    {downloadedChapters?.length !== manga.chapters.length && (
+                      <Button
+                        className="w-full"
+                        onClick={handleDownload}
+                        disabled={downloading}
+                      >
+                        {downloading ? (
+                          <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
+                        ) : (
+                          "Download single chapter"
+                        )}
+                      </Button>
+                    )}
                     {favorite ? (
                       <Button className="w-full" onClick={removeFavorite}>
                         Remove from Favorites
