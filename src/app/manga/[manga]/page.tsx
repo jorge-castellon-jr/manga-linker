@@ -159,7 +159,10 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                       key={chapter.link}
                       href={`${chapter.saveLocation}`}
                       prefetch
-                      onClick={() => handleRead(chapter)}
+                      onClick={() => {
+                        handleRead(chapter)
+                        handleDownload()
+                      }}
                     >
                       <Card>
                         <CardHeader>
