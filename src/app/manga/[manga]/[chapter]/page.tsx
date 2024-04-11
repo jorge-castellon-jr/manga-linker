@@ -28,7 +28,7 @@ export default function SingleGenre({
 
   useEffect(() => {
     if (imagesToLoad === loadedImages) {
-      setLoading(false);
+     // setLoading(false);
     }
   }, [loadedImages, imagesToLoad]);
 
@@ -47,20 +47,16 @@ export default function SingleGenre({
           <div
             className={`-mx-4`}
           >
-            {loading && (
+            {!loading && (
               <Skeleton className="h-[500px] w-full rounded-xl mb-[500px]" />
             )}
 
             {chapter.images.map((image, index) => (
               <div key={image} className={"relative w-full"}>
-                <Image
+                <img
                   src={image}
                   alt={`${chapter.title}-${index}`}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
                   style={{ width: "100%", height: "auto" }}
-                  onLoadCapture={handleImageLoad}
                 />
               </div>
             ))}
