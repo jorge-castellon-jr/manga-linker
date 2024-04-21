@@ -16,13 +16,9 @@ export default function Favorites({ params }: { params: { genre: string } }) {
       const localUser = localStorage.getItem("user");
       if (!localUser) return setLoading(false);
 
-      const user = JSON.parse(localUser) as UserData;
       const response = await fetch(`/api/login/favorites`, {
         method: "POST",
-        body: JSON.stringify({
-          username: user.username,
-          password: user.password,
-        }),
+        body: localUser,
       });
       const fetchedUser: Favorite[] = await response.json();
 

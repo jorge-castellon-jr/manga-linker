@@ -7,9 +7,13 @@ export const GET = async (
   _: NextRequest,
   { params }: { params: { id: string } }
 ) => {
+  console.log(params, `${dbUrl()}/manga/${params.id}`);
   const { id } = params;
-  const data = await getSingleManga(id);
-  return response(data);
+  const data = await fetch(`${dbUrl()}/manga/${id}`, {
+    method: "GET",
+    cache: "no-cache",
+  });
+  return response(await data.json());
 };
 
 export const POST = async (

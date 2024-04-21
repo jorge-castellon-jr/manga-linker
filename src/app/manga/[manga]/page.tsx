@@ -16,38 +16,42 @@ import {
 } from "@/lib/favorites";
 import { toast } from "sonner";
 import SpinnerIcon from "@/components/icon/spinner";
+import { BadgeCheckIcon, DownloadCloudIcon, DownloadIcon } from "lucide-react";
+import ChapterButton from "./ChapterButton";
 
-export default function SingleManga({ params }: { params: { manga: string } }) {
+export default function SingleMangaPage({
+  params,
+}: {
+  params: { manga: string };
+}) {
   const [loading, setLoading] = useState(true);
   const [manga, setManga] = useState<SingleManga>();
-  const [downloadedChapters, setDownloadedChapters] =
-    useState<DownloadedChapter[]>();
 
-  const fetchDownloadedChapters = async () => {
-    const downloadedChapters = await fetch(
-      `/api/manga/${params.manga}/downloaded`,
-      {
-        cache: "no-store",
-      }
-    );
-    const downloadedChaptersData: DownloadedChapter[] =
-      await downloadedChapters.json();
-    setDownloadedChapters(downloadedChaptersData);
-  };
   // fetch the data from the api
   useEffect(() => {
     const fetchData = async () => {
-      const all = await fetch("/api/manga/" + params.manga);
+      const all = await fetch("/api/manga/" + params.manga, {
+        cache: "no-store",
+      });
       const allData = await all.json();
       setManga(allData);
       setLoading(false);
     };
     fetchData();
 
-    fetchDownloadedChapters();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const allChapters = () => {
+    if (!manga) return [];
+    return manga.chapters;
+  };
+
+  const downloadedChapters = () => {
+    return allChapters().filter((chapter) => {
+      return chapter.totalImages === chapter.downloadedImages.length;
+    });
+  };
 
   const handleRead = (chapter: SingleMangaChapter) => {
     console.log("Read");
@@ -59,54 +63,12 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
   };
 
   const [downloading, setDownloading] = useState(false);
-  const handleDownload = async () => {
+  const handleDownload = async (chapter: SingleMangaChapter) => {
     setDownloading(true);
     try {
-      const fetchData = await fetch("/api/manga/" + params.manga, {
-        method: "POST",
-      });
-      const { message, data } = await fetchData.json();
-      if (!data.foundManga) {
-        setDownloading(false);
-        return toast.info("Manga was created");
-      }
-
-      const { foundChapters } = data;
-
-      const needDownload = foundChapters.filter(
-        (chapter: any) => !chapter.downloaded
-      );
-
-      if (!needDownload.length) {
-        setDownloading(false);
-        return toast.info("All chapters already downloaded");
-      }
-
-      if (
-        needDownload[0].downloadedImages !== needDownload[0].totalImages ||
-        needDownload[0].downloadedImages === 0
-      ) {
-        const wait =
-          (needDownload[0].totalImages - needDownload[0].downloadedImages) * 3;
-        // set the wait time to a minimum of 10 seconds and a maximum of 60 seconds
-        const waitSeconds = Math.min(Math.max(wait, 10), 30);
-        console.log("Waiting for", waitSeconds, "seconds");
-        if (needDownload[0].totalImages === 0) fetchDownloadedChapters();
-
-        setTimeout(() => {
-          handleDownload();
-        }, waitSeconds * 1000);
-        return toast(
-          `Attempting to downloading more images, please wait a moment. ${
-            needDownload[0].downloadedImages
-          }/${needDownload[0].totalImages || "Unknown"}`
-        );
-      }
-
-      toast.success(message);
+      await fetch(`/api/queue/${params.manga}/${chapter.id}`);
+      toast.success(`Added ${chapter.title} to download queue`);
       setDownloading(false);
-
-      fetchDownloadedChapters();
     } catch (error) {
       console.error(error);
       toast.error("Failed to download chapter");
@@ -157,18 +119,21 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
               </CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <img src={manga.image} alt={manga.title} />
+                  <img
+                    src={`https://images.castellon.dev/${manga.id}/cover`}
+                    alt={manga.title}
+                  />
                   <div className="flex flex-col gap-4">
-                    {downloadedChapters?.length !== manga.chapters.length && (
+                    {downloadedChapters().length !== manga.chapters.length && (
                       <Button
                         className="w-full"
-                        onClick={handleDownload}
+                        // onClick={handleDownload}
                         disabled={downloading}
                       >
                         {downloading ? (
                           <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
                         ) : (
-                          "Download single chapter"
+                          "Download next Chapter"
                         )}
                       </Button>
                     )}
@@ -185,61 +150,27 @@ export default function SingleManga({ params }: { params: { manga: string } }) {
                 </div>
               </CardContent>
             </Card>
-            {!!downloadedChapters?.length && (
-              <>
-                {downloadedChapters.length !== manga.chapters.length && (
-                  <h2 className="text-2xl">Downloaded Chapters</h2>
-                )}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-                  {downloadedChapters.map((chapter) => (
-                    <Link
-                      key={chapter.link}
-                      href={`${chapter.saveLocation}`}
-                      prefetch
-                      onClick={() => {
-                        handleRead(chapter);
-                        // handleDownload();
-                      }}
-                    >
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-center">
-                            {chapter.title}
-                          </CardTitle>
-                        </CardHeader>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-
-                {downloadedChapters.length !== manga.chapters.length && (
-                  <h2 className="text-2xl">Online Chapters</h2>
-                )}
-              </>
-            )}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              {manga.chapters
-                .filter((chapter) => {
-                  return !downloadedChapters?.find((downloadedChapter) => {
-                    return downloadedChapter.id === chapter.id;
-                  });
-                })
-                .map((chapter) => (
+              {allChapters().map((chapter) => {
+                if (chapter.downloadedImages.length !== chapter.totalImages) {
+                  return (
+                    <button key={chapter.id}>
+                      <ChapterButton
+                        chapter={chapter}
+                        onClick={() => handleDownload(chapter)}
+                      />
+                    </button>
+                  );
+                }
+                return (
                   <Link
-                    key={chapter.link}
-                    href={chapter.link}
-                    prefetch
-                    onClick={() => handleRead(chapter)}
+                    key={chapter.id}
+                    href={`/manga/${params.manga}/${chapter.id}`}
                   >
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-center">
-                          {chapter.title}
-                        </CardTitle>
-                      </CardHeader>
-                    </Card>
+                    <ChapterButton chapter={chapter} />
                   </Link>
-                ))}
+                );
+              })}
             </div>
           </div>
         )

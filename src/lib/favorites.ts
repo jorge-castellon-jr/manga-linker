@@ -24,7 +24,7 @@ const updateFavorites = (user: UserData) => {
   const newUserData = JSON.stringify(user);
 
   localStorage.setItem("user", newUserData);
-  fetch(`/api/login/favorites/read`, {
+  fetch(`/api/login/favorites`, {
     method: "POST",
     body: newUserData,
   });

@@ -2,13 +2,16 @@ import { load, Element } from "cheerio";
 
 export interface SingleMangaChapter {
   id: string;
+  chapterId: string;
+  mangaId: string;
   title: string;
-  link: string;
+  totalImages: number;
+  downloadedImages: string[];
 }
 
 export interface SingleManga {
+  id: string;
   title: string;
-  image: string;
   chapters: SingleMangaChapter[];
 }
 

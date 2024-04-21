@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { SingleChapter } from "@/app/api/manga/[id]/[chapter]/GetSingleChapter";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
-export default function SingleGenre({
+export default function SingleChapter({
   params,
 }: {
   params: { manga: string; chapter: string };
@@ -17,7 +18,9 @@ export default function SingleGenre({
   // fetch the data from the api
   useEffect(() => {
     const fetchData = async () => {
-      const all = await fetch(`/api/manga/${params.manga}/${params.chapter}`);
+      const all = await fetch(`/api/manga/${params.manga}/${params.chapter}`, {
+        cache: "no-store",
+      });
       const allData = await all.json();
       setChapter(allData);
       setImagesToLoad(allData.images.length);
@@ -28,11 +31,13 @@ export default function SingleGenre({
 
   useEffect(() => {
     if (imagesToLoad === loadedImages) {
-     // setLoading(false);
+      setLoading(false);
     }
   }, [loadedImages, imagesToLoad]);
 
   const handleImageLoad = () => {
+    console.log("Image loaded");
+
     setLoadedImages((prev) => prev + 1);
   };
 
@@ -44,10 +49,8 @@ export default function SingleGenre({
             <h1 className="text-4xl font-black">{chapter.mangaTitle}</h1>
             <h2>{chapter.title}</h2>
           </div>
-          <div
-            className={`-mx-4`}
-          >
-            {!loading && (
+          <div className={`-mx-4`}>
+            {loading && (
               <Skeleton className="h-[500px] w-full rounded-xl mb-[500px]" />
             )}
 
@@ -57,9 +60,15 @@ export default function SingleGenre({
                   src={image}
                   alt={`${chapter.title}-${index}`}
                   style={{ width: "100%", height: "auto" }}
+                  onLoad={handleImageLoad}
                 />
               </div>
             ))}
+
+            <div className="grid grid-cols-2">
+              {chapter.previous && <Button>{chapter.previous}</Button>}
+              {chapter.next && <Button>{chapter.next}</Button>}
+            </div>
           </div>
         </div>
       )}
