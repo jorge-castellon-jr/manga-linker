@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
-export default function SingleChapter({
+export default function SingleChapterPage({
   params,
 }: {
   params: { manga: string; chapter: string };

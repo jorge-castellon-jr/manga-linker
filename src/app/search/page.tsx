@@ -2,7 +2,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { SingleGenre } from "../api/genres/[id]/GetSingleGenre";
 import Image from "next/image";
-import SingleGenreManga from "@/components/manga/SingleGenreManga";
+import SingleGenreMangaButton from "@/components/manga/SingleGenreManga";
 import SpinnerIcon from "@/components/icon/spinner";
 import { Button } from "@/components/ui/button";
 import { useSearchStore } from "@/lib/SearchStore";
@@ -59,22 +59,22 @@ export default function SearchPage() {
             <h1 className="text-2xl">{searchData.title}</h1>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {searchData.mangas.map((manga) => (
-                <SingleGenreManga manga={manga} key={manga.link} />
+                <SingleGenreMangaButton manga={manga} key={manga.link} />
               ))}
             </div>
           </div>
           <div className="mx-4 mb-4">
-          {!searchDone &&
-            (fetching ? (
-              <Button className="w-full">
-                <SpinnerIcon className="h-5 w-5 animate-spin" />
-              </Button>
-            ) : (
-              <Button className="w-full" onClick={fetchMore}>
-                Load More
-              </Button>
-            ))}
-            </div>
+            {!searchDone &&
+              (fetching ? (
+                <Button className="w-full">
+                  <SpinnerIcon className="h-5 w-5 animate-spin" />
+                </Button>
+              ) : (
+                <Button className="w-full" onClick={fetchMore}>
+                  Load More
+                </Button>
+              ))}
+          </div>
         </>
       )}
     </>

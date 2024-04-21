@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import SingleGenreManga from "@/components/manga/SingleGenreManga";
+import SingleGenreMangaButton from "@/components/manga/SingleGenreManga";
 import { SingleManga } from "../api/manga/[id]/GetSingleManga";
 import { UserData } from "@/lib/UserStore";
 import { Favorite } from "@/lib/favorites";
@@ -41,7 +41,7 @@ export default function Favorites({ params }: { params: { genre: string } }) {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {!!mangas &&
               mangas.map((manga) => (
-                <SingleGenreManga key={manga.link} manga={manga} />
+                <SingleGenreMangaButton key={manga.id} manga={manga} />
               ))}
           </div>
         </div>

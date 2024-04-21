@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SingleGenre } from "../../api/genres/[id]/GetSingleGenre";
-import SingleGenreManga from "@/components/manga/SingleGenreManga";
+import SingleGenreMangaButton from "@/components/manga/SingleGenreManga";
 import { Button } from "@/components/ui/button";
 import SpinnerIcon from "@/components/icon/spinner";
 
@@ -47,7 +47,7 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
               <h1>{genre.title}</h1>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {genre.mangas.map((manga) => (
-                  <SingleGenreManga key={manga.link} manga={manga} />
+                  <SingleGenreMangaButton key={manga.link} manga={manga} />
                 ))}
               </div>
               {fetching ? (

@@ -1,12 +1,8 @@
-import { SingleGenreManga } from "@/app/api/genres/[id]/GetSingleGenre";
 import { UserData } from "./UserStore";
-import { dbUrl } from "./env";
 
 export interface Favorite {
   id: string;
   title: string;
-  link: string;
-  image: string;
   read: string[];
 }
 
@@ -62,9 +58,9 @@ export const addToFavorites = (manga: Favorite) => {
   updateFavorites(newUserData);
 };
 
-export const removeFromFavorites = (manga: SingleGenreManga) => {
+export const removeFromFavorites = (id: string) => {
   const user = getUser();
-  const newFavorites = user.favorites.filter((fav) => fav.id !== manga.id);
+  const newFavorites = user.favorites.filter((fav) => fav.id !== id);
   const newUserData = { ...user, favorites: newFavorites };
 
   updateFavorites(newUserData);

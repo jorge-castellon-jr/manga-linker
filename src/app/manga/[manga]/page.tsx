@@ -86,20 +86,13 @@ export default function SingleMangaPage({
     addToFavorites({
       id: params.manga,
       title: manga!.title,
-      link: "/manga/" + params.manga,
-      image: manga!.image,
       read: [],
     });
     toast.success("Added to favorites");
   };
   const removeFavorite = async () => {
     setFavorite(false);
-    removeFromFavorites({
-      id: params.manga,
-      title: manga!.title,
-      link: "/manga/" + params.manga,
-      image: manga!.image,
-    });
+    removeFromFavorites(params.manga);
     toast.success("Removed from favorites");
   };
   return (

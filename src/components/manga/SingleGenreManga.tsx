@@ -10,10 +10,11 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { SingleGenreManga } from "@/app/api/genres/[id]/GetSingleGenre";
+import { SingleGenreManga as SingleGenreMangaType } from "@/app/api/genres/[id]/GetSingleGenre";
 import { toast } from "sonner";
 import Link from "next/link";
 import {
+  Favorite,
   addToFavorites,
   isFavorite,
   removeFromFavorites,
@@ -22,7 +23,7 @@ import { StarIcon, StarOffIcon } from "lucide-react";
 import { useUserStore } from "@/lib/UserStore";
 
 type Props = {
-  manga: SingleGenreManga;
+  manga: SingleGenreMangaType | Favorite;
 };
 
 const SingleGenreManga = ({ manga }: Props) => {
@@ -33,26 +34,29 @@ const SingleGenreManga = ({ manga }: Props) => {
     setFavorite(isFavorite(manga.id));
   }, []);
 
-  const addFavorite = async (manga: SingleGenreManga) => {
+  const addFavorite = async (manga: SingleGenreMangaType | Favorite) => {
     setFavorite(true);
-    addToFavorites({ ...manga, read: [] });
+    addToFavorites({ id: manga.id, title: manga.title, read: [] });
     toast.success("Added to favorites");
   };
-  const removeFavorite = async (manga: SingleGenreManga) => {
+  const removeFavorite = async (id: string) => {
     setFavorite(false);
-    removeFromFavorites(manga);
+    removeFromFavorites(id);
     toast.success("Removed from favorites");
   };
 
   return (
-    <Link href={manga.link} prefetch>
+    <Link href={`/manga/${manga.id}`} prefetch>
       <Card className="flex flex-col h-full">
         <CardHeader className="flex-grow">
           <CardTitle>{manga.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="rounded-lg relative aspect-[11/16] overflow-hidden">
-            <Image src={manga.image} alt={manga.title} fill objectFit="cover" />
+            <img
+              src={`https://images.castellon.dev/${manga.id}/cover`}
+              alt={manga.title}
+            />
           </div>
         </CardContent>
         {isUserSignedIn && (
@@ -61,7 +65,7 @@ const SingleGenreManga = ({ manga }: Props) => {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  removeFavorite(manga);
+                  removeFavorite(manga.id);
                 }}
                 className="w-full"
                 variant="secondary"
