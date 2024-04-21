@@ -8,15 +8,17 @@ export const GET = async (
 ) => {
   const { mangaId, chapterId } = params;
 
-  await addToQueue(`${mangaId}/${chapterId}`);
+  const message = await addToQueue(`${mangaId}/${chapterId}`);
 
-  return response({ message: `Added to queue ${mangaId}/${chapterId}` });
+  return response(message);
 };
 
 const addToQueue = async (id: string): Promise<void> => {
   if (!id) throw new Error("No chapter id provided");
 
-  await fetch(`${dbUrl()}/manga/${id}/download`, {
+  const data = await fetch(`${dbUrl()}/manga/${id}/download`, {
     cache: "no-cache",
   });
+
+  return data.json();
 };
