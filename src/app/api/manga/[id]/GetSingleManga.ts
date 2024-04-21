@@ -12,10 +12,10 @@ export interface SingleMangaChapter {
 export interface SingleManga {
   id: string;
   title: string;
-  chapters: SingleMangaChapter[];
+  chapters: any[];
 }
 
-export const getSingleManga = async (id: string): Promise<SingleManga> => {
+export const getSingleManga = async (id: string): Promise<any> => {
   if (!id) throw new Error("No genre id provided");
   const url = "https://chapmanganato.to/" + id;
   const response = await fetch(url);
@@ -33,7 +33,7 @@ export const getSingleManga = async (id: string): Promise<SingleManga> => {
   }
 
   const chapters = allChapters
-    .map((chapter): SingleMangaChapter => {
+    .map((chapter) => {
       const title = $(chapter).text();
       const link = $(chapter).attr("href")!;
       return {
