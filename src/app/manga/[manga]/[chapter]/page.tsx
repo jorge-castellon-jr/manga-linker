@@ -1,19 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SingleChapter } from "@/app/api/manga/[id]/[chapter]/GetSingleChapter";
-import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import ChapterPage from "@/components/manga/ChapterPage";
+import { Slider } from "@/components/ui/slider";
 
 export default function SingleChapterPage({
   params,
 }: {
   params: { manga: string; chapter: string };
 }) {
-  const [loading, setLoading] = useState(true);
   const [chapter, setChapter] = useState<SingleChapter>();
-  const [imagesToLoad, setImagesToLoad] = useState<number>(100);
-  const [loadedImages, setLoadedImages] = useState<number>(0);
 
   // fetch the data from the api
   useEffect(() => {
@@ -23,46 +20,45 @@ export default function SingleChapterPage({
       });
       const allData = await all.json();
       setChapter(allData);
-      setImagesToLoad(allData.images.length);
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (imagesToLoad === loadedImages) {
-      setLoading(false);
-    }
-  }, [loadedImages, imagesToLoad]);
-
-  const handleImageLoad = () => {
-    console.log("Image loaded");
-
-    setLoadedImages((prev) => prev + 1);
-  };
+  const [darken, setDarken] = useState(false);
+  const [darkenLevel, setDarkenLevel] = useState(1);
+  const toggleDarken = () => setDarken(!darken);
 
   return (
     <>
       {chapter && (
         <div className="grid gap-8 p-4">
-          <div>
-            <h1 className="text-4xl font-black">{chapter.mangaTitle}</h1>
-            <h2>{chapter.title}</h2>
-          </div>
-          <div className={`-mx-4`}>
-            {loading && (
-              <Skeleton className="h-[500px] w-full rounded-xl mb-[500px]" />
-            )}
-
-            {chapter.images.map((image, index) => (
-              <div key={image} className={"relative w-full"}>
-                <img
-                  src={image}
-                  alt={`${chapter.title}-${index}`}
-                  style={{ width: "100%", height: "auto" }}
-                  onLoad={handleImageLoad}
+          <div className="grid gap-4 grid-cols-2">
+            <div>
+              <h1 className="text-4xl font-black">{chapter.mangaTitle}</h1>
+              <h2>{chapter.title}</h2>
+            </div>
+            <div className="flex flex-col gap-4 items-end">
+              <Button onClick={toggleDarken}>Darken</Button>
+              {darken && (
+                <Slider
+                  defaultValue={[darkenLevel]}
+                  min={1}
+                  max={5}
+                  step={1}
+                  onValueChange={(value) => setDarkenLevel(value[0])}
                 />
-              </div>
+              )}
+            </div>
+          </div>
+          <div className={[`-mx-4`, darken && "invert"].join(" ")}>
+            {chapter.images.map((image, index) => (
+              <ChapterPage
+                key={image}
+                src={image}
+                darken={darken}
+                darkenLevel={darkenLevel}
+              />
             ))}
 
             <div className="grid grid-cols-2">
