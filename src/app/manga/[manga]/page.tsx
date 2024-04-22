@@ -32,9 +32,12 @@ export default function SingleMangaPage({
     const all = await fetch("/api/manga/" + params.manga, {
       cache: "no-store",
     });
-    const allData = await all.json();
+    const allData = (await all.json()) as SingleManga;
     setManga(allData);
     setLoading(false);
+    // if (!allChaptersDownloaded()) {
+    //   setFilter("2");
+    // }
   };
   // fetch the data from the api
   useEffect(() => {
@@ -42,7 +45,14 @@ export default function SingleMangaPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [filter, setFilter] = useState<string>("2");
+  const allChaptersDownloaded = () => {
+    if (!manga) return false;
+    return manga.chapters.every(
+      (chapter) => chapter.downloadedImages.length === chapter.totalImages
+    );
+  };
+
+  const [filter, setFilter] = useState<string>("");
   const handleFiltering = (value: string) => {
     setFilter(value);
   };
@@ -176,18 +186,20 @@ export default function SingleMangaPage({
                         Add to Favorites
                       </Button>
                     )}
-                    <ToggleGroup
-                      type="single"
-                      value={filter}
-                      onValueChange={handleFiltering}
-                    >
-                      <ToggleGroupItem value="1">
-                        <BadgeCheckIcon />
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="2">
-                        <DownloadCloudIcon />
-                      </ToggleGroupItem>
-                    </ToggleGroup>
+                    {!allChaptersDownloaded() && (
+                      <ToggleGroup
+                        type="single"
+                        value={filter}
+                        onValueChange={handleFiltering}
+                      >
+                        <ToggleGroupItem value="1">
+                          <BadgeCheckIcon />
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="2">
+                          <DownloadCloudIcon />
+                        </ToggleGroupItem>
+                      </ToggleGroup>
+                    )}
                   </div>
                 </div>
               </CardContent>
