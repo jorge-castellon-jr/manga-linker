@@ -53,10 +53,12 @@ const SingleGenreManga = ({ manga }: Props) => {
         </CardHeader>
         <CardContent>
           <div className="rounded-lg relative aspect-[11/16] overflow-hidden">
-            <img
-              src={`https://images.castellon.dev/${manga.id}/cover`}
-              alt={manga.title}
-            />
+            <picture>
+              <img
+                src={`https://images.castellon.dev/${manga.id}/cover`}
+                alt={manga.title}
+              />
+            </picture>
           </div>
         </CardContent>
         {isUserSignedIn && (

@@ -1,5 +1,6 @@
 import { SingleMangaChapter } from "@/app/api/manga/[id]/GetSingleManga";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { BadgeCheckIcon, DownloadCloudIcon } from "lucide-react";
 import React from "react";
 
@@ -31,6 +32,12 @@ const ChapterButton = ({ chapter, onClick }: Props) => {
             )}
           </div>
         </CardTitle>
+        {!isDownloaded && (
+          <Progress
+            value={chapter.downloadedImages.length}
+            max={chapter.totalImages}
+          />
+        )}
       </CardHeader>
     </Card>
   );

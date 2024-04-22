@@ -10,8 +10,8 @@ interface Props {
 
 const ChapterPage = ({ src, darken, darkenLevel }: Props) => {
   return (
-    <div>
-      <img src={src} style={{ filter: "url(#whiteToTransparent)" }} />
+    <picture>
+      <img src={src} alt="" style={{ filter: "url(#whiteToTransparent)" }} />
       {darken && (
         <svg width="0" height="0">
           <defs>
@@ -25,7 +25,7 @@ const ChapterPage = ({ src, darken, darkenLevel }: Props) => {
           </defs>
         </svg>
       )}
-    </div>
+    </picture>
   );
 };
 

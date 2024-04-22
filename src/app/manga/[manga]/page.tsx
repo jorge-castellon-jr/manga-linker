@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import SpinnerIcon from "@/components/icon/spinner";
 import { BadgeCheckIcon, DownloadCloudIcon, DownloadIcon } from "lucide-react";
 import ChapterButton from "./ChapterButton";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export default function SingleMangaPage({
   params,
@@ -27,24 +28,37 @@ export default function SingleMangaPage({
   const [loading, setLoading] = useState(true);
   const [manga, setManga] = useState<SingleManga>();
 
+  const fetchData = async () => {
+    const all = await fetch("/api/manga/" + params.manga, {
+      cache: "no-store",
+    });
+    const allData = await all.json();
+    setManga(allData);
+    setLoading(false);
+  };
   // fetch the data from the api
   useEffect(() => {
-    const fetchData = async () => {
-      const all = await fetch("/api/manga/" + params.manga, {
-        cache: "no-store",
-      });
-      const allData = await all.json();
-      setManga(allData);
-      setLoading(false);
-    };
     fetchData();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [filter, setFilter] = useState<string>("2");
+  const handleFiltering = (value: string) => {
+    setFilter(value);
+  };
   const allChapters = () => {
     if (!manga) return [];
-    return manga.chapters;
+    return manga.chapters.filter((chapter) => {
+      if (filter === "") {
+        return true;
+      }
+      if (filter === "1") {
+        return chapter.downloadedImages.length === chapter.totalImages;
+      }
+      if (filter === "2") {
+        return chapter.downloadedImages.length !== chapter.totalImages;
+      }
+    });
   };
 
   const downloadedChapters = () => {
@@ -76,6 +90,19 @@ export default function SingleMangaPage({
     }
   };
 
+  const handleDownloadAll = async () => {
+    setDownloading(true);
+    try {
+      await fetch(`/api/queue/${params.manga}`);
+      toast.success(`Added ${manga?.title} to download queue`);
+      setDownloading(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to download chapter");
+      setDownloading(false);
+    }
+  };
+
   const [favorite, setFavorite] = useState(false);
   useEffect(() => {
     setFavorite(isFavorite(params.manga));
@@ -95,6 +122,14 @@ export default function SingleMangaPage({
     removeFromFavorites(params.manga);
     toast.success("Removed from favorites");
   };
+
+  useEffect(() => {
+    if (manga?.chapters.length === downloadedChapters().length) return;
+    setTimeout(() => {
+      fetchData();
+    }, 1000 * 5);
+  }, [manga]);
+
   return (
     <>
       {loading ? (
@@ -112,21 +147,23 @@ export default function SingleMangaPage({
               </CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <img
-                    src={`https://images.castellon.dev/${manga.id}/cover`}
-                    alt={manga.title}
-                  />
+                  <picture>
+                    <img
+                      src={`https://images.castellon.dev/${manga.id}/cover`}
+                      alt={manga.title}
+                    />
+                  </picture>
                   <div className="flex flex-col gap-4">
                     {downloadedChapters().length !== manga.chapters.length && (
                       <Button
                         className="w-full"
-                        // onClick={handleDownload}
+                        onClick={handleDownloadAll}
                         disabled={downloading}
                       >
                         {downloading ? (
                           <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
                         ) : (
-                          "Download next Chapter"
+                          "Download All Chapter"
                         )}
                       </Button>
                     )}
@@ -139,6 +176,18 @@ export default function SingleMangaPage({
                         Add to Favorites
                       </Button>
                     )}
+                    <ToggleGroup
+                      type="single"
+                      value={filter}
+                      onValueChange={handleFiltering}
+                    >
+                      <ToggleGroupItem value="1">
+                        <BadgeCheckIcon />
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="2">
+                        <DownloadCloudIcon />
+                      </ToggleGroupItem>
+                    </ToggleGroup>
                   </div>
                 </div>
               </CardContent>

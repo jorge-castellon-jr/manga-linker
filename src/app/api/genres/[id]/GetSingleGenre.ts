@@ -1,3 +1,4 @@
+import { dbUrl } from "@/lib/env";
 import { load, Element } from "cheerio";
 
 export interface SingleGenreManga {
@@ -45,6 +46,15 @@ export const getSingleGenre = async (id: string): Promise<SingleGenre> => {
       image,
     };
   });
+
+  await Promise.all(
+    mangas.map(async (manga) => {
+      await fetch(`${dbUrl()}/manga/${manga.id}`, {
+        method: "GET",
+        cache: "no-cache",
+      });
+    })
+  );
 
   return {
     title,
