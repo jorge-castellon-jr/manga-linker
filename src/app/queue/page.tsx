@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useEffect, useState } from "react";
 
@@ -7,13 +8,13 @@ type Props = {};
 const QueuePage = (props: Props) => {
   const [queue, setQueue] = useState<string[] | null>(null);
   const [activeDownload, setActiveDownload] = useState<string | null>(null);
+  const fetchData = async () => {
+    const res = await fetch("/api/queue");
+    const data = await res.json();
+    setQueue(data.queue);
+    setActiveDownload(data.activeDownload);
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("/api/queue");
-      const data = await res.json();
-      setQueue(data.queue);
-      setActiveDownload(data.activeDownload);
-    };
     fetchData();
   }, []);
 
@@ -33,6 +34,23 @@ const QueuePage = (props: Props) => {
   return (
     <div className="grid gap-8 p-4">
       <h1 className="text-5xl">Queue</h1>
+      <div className="flex gap-4">
+        <Button
+          onClick={async () => {
+            fetchData();
+          }}
+        >
+          Refresh
+        </Button>
+        <Button
+          onClick={async () => {
+            await fetch("/api/queue", { method: "DELETE" });
+            fetchData();
+          }}
+        >
+          Clear Queue
+        </Button>
+      </div>
       {queue && (
         <>
           <div>

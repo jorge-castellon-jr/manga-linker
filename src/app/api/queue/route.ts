@@ -8,3 +8,10 @@ export const GET = async () => {
   });
   return response(await data.json());
 };
+
+export const DELETE = async () => {
+  const data = await fetch(`${dbUrl()}/queue`, {
+    method: "DELETE",
+  });
+  return response(await data.json());
+};
