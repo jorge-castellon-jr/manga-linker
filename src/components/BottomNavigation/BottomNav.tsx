@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   CircleUserIcon,
   HomeIcon,
+  LayoutListIcon,
   LibraryBigIcon,
   MenuIcon,
   StarIcon,
@@ -36,6 +37,12 @@ const BottomNav = (props: Props) => {
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (!!user) signIn(JSON.parse(user));
+
+    const getQueue = async () => {
+      const res = await fetch("/api/queue");
+      const data = await res.json();
+      console.log(data);
+    };
   }, []);
 
   const logOut = () => {
@@ -70,8 +77,14 @@ const BottomNav = (props: Props) => {
         onClick={() => router.back()}
       >
         <ArrowLeft className="icon" />
-        <span className="sr-only">Go To Favorites</span>
+        <span className="sr-only">Go Back</span>
       </Button>
+      <Link href="/queue" prefetch>
+        <Button variant="outline" size="icon">
+          <LayoutListIcon className="icon" />
+          <span className="sr-only">Go To Queue</span>
+        </Button>
+      </Link>
       {isUserSignedIn && (
         <Link href="/favorites" prefetch>
           <Button variant="outline" size="icon" className="shrink-0">
