@@ -1,6 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ExternalLinkIcon, ShareIcon } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 type Props = {};
@@ -61,7 +63,7 @@ const QueuePage = (props: Props) => {
             <h2 className="text-2xl">Queue</h2>
             <div
               className="grid gap-4"
-              style={{ gridTemplateColumns: "auto 1fr" }}
+              style={{ gridTemplateColumns: "auto 1fr auto" }}
             >
               {queue.map((item, index) => (
                 <>
@@ -78,6 +80,22 @@ const QueuePage = (props: Props) => {
                     /> */}
                   </div>
                   <div>{item}</div>
+                  <Link href={`/manga/${item.split("/")[0]}`}>
+                    <Button variant="outline" size="icon" className="shrink-0">
+                      <ExternalLinkIcon className="icon" />
+                    </Button>
+                  </Link>
+                  {/* <Button
+										onClick={async () => {
+											await fetch("/api/queue", {
+												method: "DELETE",
+												body: JSON.stringify({ id: item }),
+											});
+											fetchData();
+										}}
+									>
+										Remove
+									</Button> */}
                 </>
               ))}
             </div>
