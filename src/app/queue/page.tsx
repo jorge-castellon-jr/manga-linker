@@ -33,8 +33,12 @@ const QueuePage = (props: Props) => {
     setQueue(updatedItems);
   };
 
-	const getEst = () => queue ? queue.length /60 : 0
-
+  const getEst = () => {
+    if (!queue) return "";
+    const hours = Math.floor(queue.length / 60);
+    const minutes = queue.length % 60;
+    return `${hours}h ${minutes}m`;
+  };
   return (
     <div className="grid gap-8 p-4">
       <h1 className="text-5xl">Queue</h1>
@@ -62,7 +66,9 @@ const QueuePage = (props: Props) => {
             <div>{activeDownload}</div>
           </div>
           <div>
-            <h2 className="text-2xl">Queue: {queue.length} est: {getEst()}</h2>
+            <h2 className="text-2xl">
+              Queue: {queue.length} est: {getEst()}
+            </h2>
             <div
               className="grid gap-4"
               style={{ gridTemplateColumns: "auto 1fr auto" }}
