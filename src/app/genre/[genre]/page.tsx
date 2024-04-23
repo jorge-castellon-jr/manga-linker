@@ -39,10 +39,11 @@ export default function SingleGenrePage({
     setFetching(true);
     const url = `/api/genres/${params.genre}`;
     const query = new URLSearchParams();
+    query.set("page", String(page + 1));
     if (searchParams.type) query.set("type", searchParams.type);
     if (searchParams.state) query.set("state", searchParams.state);
 
-    const all = await fetch(url + query.toString());
+    const all = await fetch(url + "?" + query.toString());
     const allData = await all.json();
     setGenre((prevGenre) => ({
       ...prevGenre!,

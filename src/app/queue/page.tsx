@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ExternalLinkIcon, ShareIcon } from "lucide-react";
+import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -60,7 +60,7 @@ const QueuePage = (props: Props) => {
             <div>{activeDownload}</div>
           </div>
           <div>
-            <h2 className="text-2xl">Queue</h2>
+            <h2 className="text-2xl">Queue: {queue.length}</h2>
             <div
               className="grid gap-4"
               style={{ gridTemplateColumns: "auto 1fr auto" }}
