@@ -5,14 +5,26 @@ import SingleGenreMangaButton from "@/components/manga/SingleGenreManga";
 import { Button } from "@/components/ui/button";
 import SpinnerIcon from "@/components/icon/spinner";
 
-export default function SingleGenre({ params }: { params: { genre: string } }) {
+export default function SingleGenrePage({
+  params,
+  searchParams,
+}: {
+  params: { genre: string };
+  searchParams: { type?: string; state?: string };
+}) {
   const [loading, setLoading] = useState(true);
   const [genre, setGenre] = useState<SingleGenre>();
 
   // fetch the data from the api
   useEffect(() => {
     const fetchData = async () => {
-      const all = await fetch("/api/genres/" + params.genre);
+      const query = new URLSearchParams();
+      if (searchParams.type) query.set("type", searchParams.type);
+      if (searchParams.state) query.set("state", searchParams.state);
+
+      const all = await fetch(
+        "/api/genres/" + params.genre + "?" + query.toString()
+      );
       const allData = await all.json();
       setGenre(allData);
       setLoading(false);
@@ -25,7 +37,12 @@ export default function SingleGenre({ params }: { params: { genre: string } }) {
   const [fetching, setFetching] = useState(false);
   const fetchMore = async () => {
     setFetching(true);
-    const all = await fetch(`/api/genres/${params.genre}?page=${page + 1}`);
+    const url = `/api/genres/${params.genre}`;
+    const query = new URLSearchParams();
+    if (searchParams.type) query.set("type", searchParams.type);
+    if (searchParams.state) query.set("state", searchParams.state);
+
+    const all = await fetch(url + query.toString());
     const allData = await all.json();
     setGenre((prevGenre) => ({
       ...prevGenre!,

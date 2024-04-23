@@ -29,6 +29,13 @@ export default function Home() {
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-4 p-4 ">
+          <Link href="/genre/genre-all" prefetch>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-center">All</CardTitle>
+              </CardHeader>
+            </Card>
+          </Link>
           {genres.map((genre) => (
             <Link key={genre.link} href={genre.link} prefetch>
               <Card>
