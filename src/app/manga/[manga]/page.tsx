@@ -165,17 +165,31 @@ export default function SingleMangaPage({
                   </picture>
                   <div className="flex flex-col gap-4">
                     {downloadedChapters().length !== manga.chapters.length && (
-                      <Button
-                        className="w-full"
-                        onClick={handleDownloadAll}
-                        disabled={downloading}
-                      >
-                        {downloading ? (
-                          <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
-                        ) : (
-                          "Download All Chapter"
-                        )}
-                      </Button>
+                      <>
+                        <Button
+                          className="w-full"
+                          onClick={handleDownloadAll}
+                          disabled={downloading}
+                        >
+                          {downloading ? (
+                            <SpinnerIcon className="animate-spin w-5 h-5 mr-2" />
+                          ) : (
+                            "Download All Chapter"
+                          )}
+                        </Button>
+                        <Button
+                          className="w-full"
+                          onClick={async () => {
+                            await fetch(
+                              `/api/manga/${params.manga}/prioritize`
+                            );
+                            toast.success("Prioritized download");
+                          }}
+                          disabled={downloading}
+                        >
+                          Prioritize Download
+                        </Button>
+                      </>
                     )}
                     {favorite ? (
                       <Button className="w-full" onClick={removeFavorite}>
