@@ -33,7 +33,7 @@ const QueuePage = (props: Props) => {
     setQueue(updatedItems);
   };
 
-	const getEst = () => (queue.length ?? 0)/60
+	const getEst = () => queue ? queue.length /60 : 0
 
   return (
     <div className="grid gap-8 p-4">
