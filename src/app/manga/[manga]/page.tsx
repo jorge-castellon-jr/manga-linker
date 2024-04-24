@@ -185,6 +185,18 @@ export default function SingleMangaPage({
                         >
                           Prioritize Download
                         </Button>
+                        <Button
+                          className="w-full"
+                          onClick={async () => {
+                            await fetch(`/api/queue/${params.manga}`, {
+                              method: "DELETE",
+                            });
+                            toast.success("Removed from queue");
+                          }}
+                          disabled={downloading}
+                        >
+                          Delete from Queue
+                        </Button>
                       </>
                     )}
                     {favorite ? (

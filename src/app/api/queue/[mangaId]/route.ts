@@ -22,3 +22,19 @@ const addToQueue = async (id: string): Promise<string> => {
 
   return data.text();
 };
+
+export const DELETE = async (
+  _: NextRequest,
+  { params }: { params: { mangaId: string } }
+) => {
+  const { mangaId } = params;
+  if (!mangaId) throw new Error("No chapter id provided");
+
+  const data = await fetch(`${dbUrl()}/queue/${mangaId}`, {
+    method: "DELETE",
+    cache: "no-cache",
+  });
+  const message = await data.text();
+
+  return response(message);
+};
