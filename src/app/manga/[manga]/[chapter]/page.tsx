@@ -56,7 +56,7 @@ export default function SingleChapterPage({
             </div>
           </div>
           <div className={[`-mx-4`, darken && "invert"].join(" ")}>
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-2 gap-4 pb-4">
               {chapter.previous ? (
                 <Button>
                   <ArrowLeftIcon className="absolute left-0" />
