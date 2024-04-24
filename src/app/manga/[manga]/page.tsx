@@ -239,10 +239,7 @@ export default function SingleMangaPage({
                   );
                 }
                 return (
-                  <Link
-                    key={chapter.id}
-                    href={`/manga/${params.manga}/${chapter.id}`}
-                  >
+                  <Link key={chapter.id} href={`/manga/${chapter.id}`}>
                     <ChapterButton chapter={chapter} />
                   </Link>
                 );

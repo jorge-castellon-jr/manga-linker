@@ -5,14 +5,11 @@ export interface SingleChapter {
   mangaTitle: string;
   mangaId: string;
   title: string;
-  link: string;
-  downloaded: boolean;
   totalImages?: number;
   downloadedImages?: number;
-  saveLocation?: string;
   images: string[];
-  previous: string | null;
-  next: string | null;
+  previous?: SingleChapter | null;
+  next?: SingleChapter | null;
 }
 
 export const getSingleChapter = async (id: string): Promise<SingleChapter> => {
