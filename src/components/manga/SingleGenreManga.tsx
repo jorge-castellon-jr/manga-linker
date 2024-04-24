@@ -13,12 +13,7 @@ import Image from "next/image";
 import { SingleGenreManga as SingleGenreMangaType } from "@/app/api/genres/[id]/GetSingleGenre";
 import { toast } from "sonner";
 import Link from "next/link";
-import {
-  Favorite,
-  addToFavorites,
-  isFavorite,
-  removeFromFavorites,
-} from "@/lib/favorites";
+import { Favorite, isFavorite } from "@/lib/favorites";
 import { StarIcon, StarOffIcon } from "lucide-react";
 import { useUserStore } from "@/lib/UserStore";
 
@@ -34,6 +29,7 @@ const SingleGenreManga = ({ manga }: Props) => {
     setFavorite(isFavorite(manga.id));
   }, []);
 
+  const { addToFavorites, removeFromFavorites } = useUserStore();
   const addFavorite = async (manga: SingleGenreMangaType | Favorite) => {
     setFavorite(true);
     addToFavorites({ id: manga.id, title: manga.title, read: [] });

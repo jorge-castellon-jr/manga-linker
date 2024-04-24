@@ -56,6 +56,7 @@ export const addToFavorites = (manga: Favorite) => {
   if (isFavorite(manga.id)) return;
   const newUserData = { ...user, favorites: [...user.favorites, manga] };
   updateFavorites(newUserData);
+  return newUserData;
 };
 
 export const removeFromFavorites = (id: string) => {
@@ -64,6 +65,7 @@ export const removeFromFavorites = (id: string) => {
   const newUserData = { ...user, favorites: newFavorites };
 
   updateFavorites(newUserData);
+  return newUserData;
 };
 
 export const isFavorite = (id: string) => {

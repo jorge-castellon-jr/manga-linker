@@ -8,18 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DownloadedChapter } from "@/app/api/manga/[id]/downloaded/GetDownloadedChapters";
-import {
-  addToFavorites,
-  isFavorite,
-  removeFromFavorites,
-  updateRead,
-} from "@/lib/favorites";
+import { isFavorite } from "@/lib/favorites";
 import { toast } from "sonner";
 import SpinnerIcon from "@/components/icon/spinner";
 import { BadgeCheckIcon, DownloadCloudIcon, DownloadIcon } from "lucide-react";
 import ChapterButton from "./ChapterButton";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import MangaSkeleton from "@/components/loading/MangaSkeleton";
+import { useUserStore } from "@/lib/UserStore";
 
 export default function SingleMangaPage({
   params,
@@ -83,7 +79,7 @@ export default function SingleMangaPage({
     if (isFavorite(params.manga)) {
       console.log("isFavorite", params.manga, chapter);
 
-      updateRead(params.manga, chapter.id);
+      // updateRead(params.manga, chapter.id);
     }
   };
 
@@ -119,6 +115,7 @@ export default function SingleMangaPage({
     setFavorite(isFavorite(params.manga));
   }, []);
 
+  const { addToFavorites, removeFromFavorites } = useUserStore();
   const addFavorite = async () => {
     setFavorite(true);
     addToFavorites({
