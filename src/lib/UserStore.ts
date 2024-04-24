@@ -4,6 +4,7 @@ import {
   removeFromFavorites as removeFromFavoritesUtil,
 } from "./favorites";
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface UserStore {
   userData: UserData | null;
@@ -24,33 +25,39 @@ export interface UserData {
   folders: Folder[];
 }
 
-export const useUserStore = create<UserStore>((set) => ({
-  userData: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") ?? "")
-    : null,
-  isUserSignedIn: false,
-  signIn: (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
-    set({ userData: user, isUserSignedIn: true });
-  },
-  signOut: () => {
-    localStorage.removeItem("user");
-    set({ userData: null, isUserSignedIn: false });
-  },
-  addToFavorites: (manga: Favorite) => {
-    set((state) => {
-      if (!state.userData) return state;
+export const useUserStore = create(
+  persist<UserStore>(
+    (set) => ({
+      userData: null,
+      isUserSignedIn: false,
+      signIn: (user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        set({ userData: user, isUserSignedIn: true });
+      },
+      signOut: () => {
+        localStorage.removeItem("user");
+        set({ userData: null, isUserSignedIn: false });
+      },
+      addToFavorites: (manga: Favorite) => {
+        set((state) => {
+          if (!state.userData) return state;
 
-      const userData = addToFavorites(manga);
-      return { ...state, userData };
-    });
-  },
-  removeFromFavorites: (mangaId: string) => {
-    set((state) => {
-      if (!state.userData) return state;
+          const userData = addToFavorites(manga);
+          return { ...state, userData };
+        });
+      },
+      removeFromFavorites: (mangaId: string) => {
+        set((state) => {
+          if (!state.userData) return state;
 
-      const userData = removeFromFavoritesUtil(mangaId);
-      return { ...state, userData };
-    });
-  },
-}));
+          const userData = removeFromFavoritesUtil(mangaId);
+          return { ...state, userData };
+        });
+      },
+    }),
+    {
+      name: "user-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

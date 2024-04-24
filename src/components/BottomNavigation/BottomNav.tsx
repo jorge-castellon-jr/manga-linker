@@ -36,13 +36,24 @@ const BottomNav = (props: Props) => {
 
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (!!user) signIn(JSON.parse(user));
+    if (!user) return signOut();
 
-    const getQueue = async () => {
-      const res = await fetch("/api/queue");
-      const data = await res.json();
-      console.log(data);
-    };
+    fetch("/api/login", {
+      method: "POST",
+      body: user,
+    })
+      .then(async (res) => {
+        const data = await res.json();
+
+        if (res.ok) {
+          signIn(data.user);
+        } else {
+          signOut();
+        }
+      })
+      .catch((err) => {
+        signOut();
+      });
   }, []);
 
   const logOut = () => {
