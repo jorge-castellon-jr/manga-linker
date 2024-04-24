@@ -4,6 +4,7 @@ import { SingleGenre } from "../../api/genres/[id]/GetSingleGenre";
 import SingleGenreMangaButton from "@/components/manga/SingleGenreManga";
 import { Button } from "@/components/ui/button";
 import SpinnerIcon from "@/components/icon/spinner";
+import GenreSkeleton from "@/components/loading/GenreSkeleton";
 
 export default function SingleGenrePage({
   params,
@@ -55,9 +56,7 @@ export default function SingleGenrePage({
   return (
     <>
       {loading ? (
-        <div className="w-full h-screen grid items-center justify-center">
-          Loading
-        </div>
+        <GenreSkeleton />
       ) : (
         genre && (
           <>

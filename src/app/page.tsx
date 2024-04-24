@@ -5,6 +5,7 @@ import { DarkModeToggle } from "@/components/DarkModeToggle";
 import BottomNav from "@/components/BottomNavigation/BottomNav";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -24,8 +25,18 @@ export default function Home() {
   return (
     <>
       {loading ? (
-        <div className="w-full h-screen grid items-center justify-center">
-          Loading
+        <div className="w-full inset-0 absolute flex flex-col gap-4 p-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {Array.from({ length: 13 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader>
+                  <CardTitle className="flex justify-center">
+                    <Skeleton className="h-4 w-full" />
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-4 p-4 ">

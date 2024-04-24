@@ -19,6 +19,7 @@ import SpinnerIcon from "@/components/icon/spinner";
 import { BadgeCheckIcon, DownloadCloudIcon, DownloadIcon } from "lucide-react";
 import ChapterButton from "./ChapterButton";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import MangaSkeleton from "@/components/loading/MangaSkeleton";
 
 export default function SingleMangaPage({
   params,
@@ -143,9 +144,7 @@ export default function SingleMangaPage({
   return (
     <>
       {loading ? (
-        <div className="w-full h-screen grid items-center justify-center">
-          Loading
-        </div>
+        <MangaSkeleton />
       ) : (
         manga && (
           <div className="grid gap-4 p-4">

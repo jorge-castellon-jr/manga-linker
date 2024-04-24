@@ -19,13 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-    <head>
+      <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </head>
+      </head>
       <body className={`${inter.className}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="max-w-3xl mx-auto flex flex-col min-h-screen">
-            <div className="flex-grow">{children}</div>
+            <div className="flex-grow relative">{children}</div>
             <BottomNav />
           </div>
           <Toaster richColors position="top-right" />

@@ -5,6 +5,7 @@ import { SingleManga } from "../api/manga/[id]/GetSingleManga";
 import { UserData } from "@/lib/UserStore";
 import { Favorite } from "@/lib/favorites";
 import { dbUrl } from "@/lib/env";
+import GenreSkeleton from "@/components/loading/GenreSkeleton";
 
 export default function Favorites({ params }: { params: { genre: string } }) {
   const [loading, setLoading] = useState(true);
@@ -32,9 +33,7 @@ export default function Favorites({ params }: { params: { genre: string } }) {
   return (
     <>
       {loading ? (
-        <div className="w-full h-screen grid items-center justify-center">
-          Loading
-        </div>
+        <GenreSkeleton />
       ) : (
         <div className="grid gap-8 p-4">
           <h1>Favorites</h1>
