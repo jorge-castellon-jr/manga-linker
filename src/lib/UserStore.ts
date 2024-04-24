@@ -2,6 +2,7 @@ import { Favorite } from "./favorites";
 import { create } from "zustand";
 
 interface UserStore {
+  userData: UserData | null;
   isUserSignedIn: boolean;
   signIn: (user: UserData) => void;
   signOut: () => void;
@@ -13,13 +14,14 @@ export interface UserData {
 }
 
 export const useUserStore = create<UserStore>((set) => ({
+  userData: null,
   isUserSignedIn: false,
   signIn: (user) => {
     localStorage.setItem("user", JSON.stringify(user));
-    set({ isUserSignedIn: true });
+    set({ userData: user, isUserSignedIn: true });
   },
   signOut: () => {
     localStorage.removeItem("user");
-    set({ isUserSignedIn: false });
+    set({ userData: null, isUserSignedIn: false });
   },
 }));

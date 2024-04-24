@@ -7,10 +7,7 @@ export const POST = async (req: NextRequest) => {
 
   console.log(userData);
 
-  const data = await fetch(`${dbUrl()}/users/${userData.username}/favorites`, {
-    method: "POST",
-    body: JSON.stringify(userData),
-  });
+  const data = await fetch(`${dbUrl()}/users/${userData.username}/favorites`);
 
   const user = await data.json();
 
