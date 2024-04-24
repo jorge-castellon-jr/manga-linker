@@ -56,6 +56,32 @@ export default function SingleChapterPage({
             </div>
           </div>
           <div className={[`-mx-4`, darken && "invert"].join(" ")}>
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              {chapter.previous ? (
+                <Button>
+                  <ArrowLeftIcon className="absolute left-0" />
+                  <Link
+                    href={`/manga/${chapter.previous.id}`}
+                    className="truncate pl-3"
+                  >
+                    {chapter.previous.title}
+                  </Link>
+                </Button>
+              ) : (
+                <div></div>
+              )}
+              {chapter.next && (
+                <Button>
+                  <Link
+                    href={`/manga/${chapter.next.id}`}
+                    className="truncate pr-3"
+                  >
+                    {chapter.next.title}
+                  </Link>
+                  <ArrowRightIcon className="absolute right-0" />
+                </Button>
+              )}
+            </div>
             {chapter.images.map((image, index) => (
               <ChapterPage
                 key={image}
